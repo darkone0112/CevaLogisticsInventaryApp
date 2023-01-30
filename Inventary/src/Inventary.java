@@ -2,7 +2,7 @@
 import java.sql.*;
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
-
+/*There is still some errors with the JDBC connection*/
 public class Inventary {
     private Connection connection;
     private Statement statement;
