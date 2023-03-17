@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<jnlp spec="1.0+" codebase="http://matrix-wms-web-02U.logistics.corp/GGDLX02U" href="dcsWebStart.jnlp">
+	<information>
+		<title>Dispatcher WMS-GGDLX02U</title>
+		<vendor>Blue Yonder</vendor>
+		<description>Blue Yonder Dispatcher WMS</description>
+		<icon href="Images/Logo/blueyonder_Blue.png" kind="default"/>
+		<shortcut online="true">
+			<desktop/>
+		 </shortcut>
+	</information>
+	<security>
+		<all-permissions/>
+	</security>
+	<resources>
+		<j2se version="1.8+" />
+
+		<jar href=" DCSClient1.jar " />
+		<jar href=" Arialuni.jar " />
+		<jar href=" barbecue-1.5-beta1.jar " />
+		<jar href=" batik-anim-1.10.jar " />
+		<jar href=" batik-awt-util-1.10.jar " />
+		<jar href=" batik-bridge-1.10.jar " />
+		<jar href=" batik-constants-1.10.jar " />
+		<jar href=" batik-css-1.10.jar " />
+		<jar href=" batik-dom-1.10.jar " />
+		<jar href=" batik-ext-1.10.jar " />
+		<jar href=" batik-gvt-1.10.jar " />
+		<jar href=" batik-i18n-1.10.jar " />
+		<jar href=" batik-parser-1.10.jar " />
+		<jar href=" batik-script-1.10.jar " />
+		<jar href=" batik-svg-dom-1.10.jar " />
+		<jar href=" batik-svggen-1.10.jar " />
+		<jar href=" batik-util-1.10.jar " />
+		<jar href=" batik-xml-1.10.jar " />
+		<jar href=" commons-codec-1.10.jar " />
+		<jar href=" commons-collections-3.2.2.jar " />
+		<jar href=" commons-digester-2.1.jar " />
+		<jar href=" commons-logging-1.1.1.jar " />
+		<jar href=" dcsWebStart.jar " />
+		<jar href=" djt.jar " />
+		<jar href=" itext-2.1.7.js6.jar " />
+		<jar href=" jasperreports-6.7.0.jar " />
+		<jar href=" jasperreports-chart-themes-6.7.0.jar " />
+		<jar href=" jcommon-1.0.23.jar " />
+		<jar href=" jfreechart-1.0.19.jar " />
+		<jar href=" JScript.jar " />
+		<jar href=" poi-3.15.jar " />
+		<jar href=" reportfonts.jar " />
+		<jar href=" spring-beans-5.3.20.jar " />
+		<jar href=" spring-core-5.3.20.jar " />
+		<jar href=" spring-jcl-5.3.20.jar " />
+		<jar href=" xalan-2.7.2.jar " />
+		<jar href=" xml-apis-1.3.02.jar " />
+		<jar href=" xml-apis-ext-1.3.04.jar " />
+		<jar href=" xmlgraphics-commons-2.2.jar " />
+		<jar href=" xmlParserAPIs-2.6.2.jar " />
+		<jar href=" xmpcore-5.1.1.jar " />
+		<jar href=" xom-1.0.jar " />
+	</resources>
+	<!-- To override these parametres,use command prompt using javaws -open "100 FALSE STATION" <JNLP URL>  -->
+	<application-desc main-class="dcsWebStart.RunWebStartScreen.class">
+		<argument>0</argument>	 <!-- Window placement for Login screen  -->
+		<argument>FALSE</argument>	<!-- Application SSO Mode --> 
+	</application-desc> 
+</jnlp>
