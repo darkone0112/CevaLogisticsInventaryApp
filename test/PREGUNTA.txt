@@ -1,0 +1,7 @@
+¿Que tipo de diseño utiliza el patron DAO?
+a)Bean,Interfaz,aplicacion
+b)Bean,Interfaz,Factoria,Aplicacion
+c)Bean,Galery,Main
+d)Bean,Interfaz,Galery,Aplicacion
+
+B verdadera
