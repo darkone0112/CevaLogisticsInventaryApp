@@ -69,7 +69,7 @@ class JsonToMySQLConverter:
 
                 # create the table if it doesn't already exist
                 keys = json_data[0].keys()
-                query = "CREATE TABLE IF NOT EXISTS {} ({})".format(
+                query = "CREATE TABLE IF NOT EXISTS {} (id INT AUTO_INCREMENT PRIMARY KEY, {})".format(
                     table_name,
                     ", ".join(["{} VARCHAR(255)".format(key) for key in keys])
                 )

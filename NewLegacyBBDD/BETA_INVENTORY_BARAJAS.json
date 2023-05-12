@@ -1,0 +1,362 @@
+[
+    {
+        "SITE":"FM Barajas",
+        "OPS":"FM Air",
+        "Serial_Number":"\u00a0V9-02N7PM",
+        "Model":"T2224pD",
+        "Display_Manufacturer":"LEN",
+        "Computer_Current_User_Display_Name":"Celia Garvi"
+    },
+    {
+        "SITE":"FM Barajas",
+        "OPS":"FM Air",
+        "Serial_Number":"CNK81100Y8",
+        "Model":"HP P223",
+        "Display_Manufacturer":"HPN",
+        "Computer_Current_User_Display_Name":"Rus, Carmen"
+    },
+    {
+        "SITE":"FM Barajas",
+        "OPS":"FM Air",
+        "Serial_Number":"V9-02N7LF",
+        "Model":"T2224pD",
+        "Display_Manufacturer":"LEN",
+        "Computer_Current_User_Display_Name":"Fernandez, Beatriz"
+    },
+    {
+        "SITE":"FM Barajas",
+        "OPS":"FM Air",
+        "Serial_Number":"CNC121036K",
+        "Model":"LA1905",
+        "Display_Manufacturer":"HWP",
+        "Computer_Current_User_Display_Name":"Sanchez, Laura"
+    },
+    {
+        "SITE":"FM Barajas",
+        "OPS":"FM Air",
+        "Serial_Number":"CNC1200R80",
+        "Model":"LA1905",
+        "Display_Manufacturer":"HWP",
+        "Computer_Current_User_Display_Name":"Diana Bueno"
+    },
+    {
+        "SITE":"FM Barajas",
+        "OPS":"FM Air",
+        "Serial_Number":"CNC05205PH",
+        "Model":"LA1905",
+        "Display_Manufacturer":"HWP",
+        "Computer_Current_User_Display_Name":"Velasco, Lydia"
+    },
+    {
+        "SITE":"FM Barajas",
+        "OPS":"FM Air",
+        "Serial_Number":"CNK0310CWM",
+        "Model":"HP P224",
+        "Display_Manufacturer":"HPN",
+        "Computer_Current_User_Display_Name":"JimenezB, Miguel Angel"
+    },
+    {
+        "SITE":"FM Barajas",
+        "OPS":"FM Customs",
+        "Serial_Number":"CNK9110829",
+        "Model":"HP P223",
+        "Display_Manufacturer":"HPN",
+        "Computer_Current_User_Display_Name":"Hernandez, Patricia"
+    },
+    {
+        "SITE":"FM Barajas",
+        "OPS":"FM Air",
+        "Serial_Number":"CNK8440G86",
+        "Model":"HP P223",
+        "Display_Manufacturer":"HPN",
+        "Computer_Current_User_Display_Name":"Moreno, Beatriz"
+    },
+    {
+        "SITE":"FM Barajas",
+        "OPS":"FM Air",
+        "Serial_Number":"CNK8311BB5",
+        "Model":"HP P223",
+        "Display_Manufacturer":"HPN",
+        "Computer_Current_User_Display_Name":"Rodriguez Martin, Sylvia"
+    },
+    {
+        "SITE":"FM Barajas",
+        "OPS":"FM Sales",
+        "Serial_Number":"CNK83119SP",
+        "Model":"HP P223",
+        "Display_Manufacturer":"HPN",
+        "Computer_Current_User_Display_Name":"Villegas, Alberto"
+    },
+    {
+        "SITE":"FM Barajas",
+        "OPS":"FM Air",
+        "Serial_Number":"CNK83119SN",
+        "Model":"HP P223",
+        "Display_Manufacturer":"HPN",
+        "Computer_Current_User_Display_Name":"Cervantes, Gabriela"
+    },
+    {
+        "SITE":"FM Barajas",
+        "OPS":"FM Air",
+        "Serial_Number":"CNK83119SC",
+        "Model":"HP P223",
+        "Display_Manufacturer":"HPN",
+        "Computer_Current_User_Display_Name":"Galiano, Dina"
+    },
+    {
+        "SITE":"FM Barajas",
+        "OPS":"FM Air",
+        "Serial_Number":"CNK83119RK",
+        "Model":"HP P223",
+        "Display_Manufacturer":"HPN",
+        "Computer_Current_User_Display_Name":"Nannetti, Serena"
+    },
+    {
+        "SITE":"FM Barajas",
+        "OPS":"FM Air",
+        "Serial_Number":"CNK83119RJ",
+        "Model":"HP P223",
+        "Display_Manufacturer":"HPN",
+        "Computer_Current_User_Display_Name":"Nunez Mena, Olga"
+    },
+    {
+        "SITE":"FM Barajas",
+        "OPS":"FM Air",
+        "Serial_Number":"CNK83119RH",
+        "Model":"HP P223",
+        "Display_Manufacturer":"HPN",
+        "Computer_Current_User_Display_Name":"Munoz, Elena"
+    },
+    {
+        "SITE":"FM Barajas",
+        "OPS":"FM Air",
+        "Serial_Number":"CNK83119RD",
+        "Model":"HP P223",
+        "Display_Manufacturer":"HPN",
+        "Computer_Current_User_Display_Name":"Aramburu, Sonia"
+    },
+    {
+        "SITE":"FM Barajas",
+        "OPS":"FM Air",
+        "Serial_Number":"CNK83119RC",
+        "Model":"HP P223",
+        "Display_Manufacturer":"HPN",
+        "Computer_Current_User_Display_Name":"Hernandez, Miguel"
+    },
+    {
+        "SITE":"FM Barajas",
+        "OPS":"FM Air",
+        "Serial_Number":"CNK83119CY",
+        "Model":"HP P223",
+        "Display_Manufacturer":"HPN",
+        "Computer_Current_User_Display_Name":"Cardona, Mateo"
+    },
+    {
+        "SITE":"FM Barajas",
+        "OPS":"OP MANAGERS",
+        "Serial_Number":"CNK83119CT",
+        "Model":"HP P223",
+        "Display_Manufacturer":"HPN",
+        "Computer_Current_User_Display_Name":"Gonzalo, Pilar"
+    },
+    {
+        "SITE":"FM Barajas",
+        "OPS":"FM Air",
+        "Serial_Number":"CNK83119CR",
+        "Model":"HP P223",
+        "Display_Manufacturer":"HPN",
+        "Computer_Current_User_Display_Name":"Hernandez, Miguel"
+    },
+    {
+        "SITE":"FM Barajas",
+        "OPS":"FM Air",
+        "Serial_Number":"CNK83115SJ",
+        "Model":"HP P223",
+        "Display_Manufacturer":"HPN",
+        "Computer_Current_User_Display_Name":"Delgado, Kevin"
+    },
+    {
+        "SITE":"FM Barajas",
+        "OPS":"IT Infra ",
+        "Serial_Number":"None",
+        "Model":"HP P223",
+        "Display_Manufacturer":"HPN",
+        "Computer_Current_User_Display_Name":"Paredes, Jefferson"
+    },
+    {
+        "SITE":"FM Barajas",
+        "OPS":"HUMAN RESOURCES ",
+        "Serial_Number":"CNK8230QTL",
+        "Model":"HP P223",
+        "Display_Manufacturer":"HPN",
+        "Computer_Current_User_Display_Name":"Monis, Pedro"
+    },
+    {
+        "SITE":"FM Barajas",
+        "OPS":"FM Air",
+        "Serial_Number":"CNK8101LHR",
+        "Model":"HP P223",
+        "Display_Manufacturer":"HPN",
+        "Computer_Current_User_Display_Name":"Garcia, Arantxa"
+    },
+    {
+        "SITE":"FM Barajas",
+        "OPS":"FM Air",
+        "Serial_Number":"CNK7511S1P",
+        "Model":"HP P223",
+        "Display_Manufacturer":"HPN",
+        "Computer_Current_User_Display_Name":"Villalobos Sanchez, Ivan"
+    },
+    {
+        "SITE":"FM Barajas",
+        "OPS":"FM Air",
+        "Serial_Number":"CNK72820QC",
+        "Model":"HP P223",
+        "Display_Manufacturer":"HPN",
+        "Computer_Current_User_Display_Name":"Bueno, Armando"
+    },
+    {
+        "SITE":"FM Barajas",
+        "OPS":"FM Customs",
+        "Serial_Number":"CNK715063K",
+        "Model":"HP P223",
+        "Display_Manufacturer":"HPN",
+        "Computer_Current_User_Display_Name":"Mori, Patricia"
+    },
+    {
+        "SITE":"FM Barajas",
+        "OPS":"FM Sales",
+        "Serial_Number":"3CM2274THH   ",
+        "Model":"HP P22 G4",
+        "Display_Manufacturer":"HPN",
+        "Computer_Current_User_Display_Name":"Camara, Cristina"
+    },
+    {
+        "SITE":"FM Barajas",
+        "OPS":"MADRID VAS",
+        "Serial_Number":"3CQ9480MD5",
+        "Model":"HP E223",
+        "Display_Manufacturer":"HPN",
+        "Computer_Current_User_Display_Name":"MAD, Warehouse"
+    },
+    {
+        "SITE":"FM Barajas",
+        "OPS":"FM Air",
+        "Serial_Number":"CNK1011N51",
+        "Model":"HP E22 G4",
+        "Display_Manufacturer":"HPN",
+        "Computer_Current_User_Display_Name":"Hernandez, Guzman"
+    },
+    {
+        "SITE":"FM Barajas",
+        "OPS":"FM Customs",
+        "Serial_Number":"CNK0450BKS",
+        "Model":"HP E22 G4",
+        "Display_Manufacturer":"HPN",
+        "Computer_Current_User_Display_Name":"Rodriguez, Carina"
+    },
+    {
+        "SITE":"FM Barajas",
+        "OPS":"FM Air",
+        "Serial_Number":"6CM04605L8",
+        "Model":"HP E22 G4",
+        "Display_Manufacturer":"HPN",
+        "Computer_Current_User_Display_Name":"Macias, Mariluz"
+    },
+    {
+        "SITE":"FM Barajas",
+        "OPS":"MADRID VAS",
+        "Serial_Number":"G687559AABWJ",
+        "Model":"DELL 1704FPV",
+        "Display_Manufacturer":"DEL",
+        "Computer_Current_User_Display_Name":"MAD, Warehouse"
+    },
+    {
+        "SITE":"FM Barajas",
+        "OPS":"FM Air",
+        "Serial_Number":"\u00a0CNK83119SQ",
+        "Model":"HP P223",
+        "Display_Manufacturer":"HPN",
+        "Computer_Current_User_Display_Name":"Villanueva, Cristina"
+    },
+    {
+        "SITE":"FM Barajas",
+        "OPS":"FM Air",
+        "Serial_Number":"CNC9492221",
+        "Model":"HP E223",
+        "Display_Manufacturer":"HPN",
+        "Computer_Current_User_Display_Name":"Iturri, Mikel"
+    },
+    {
+        "SITE":"FM Barajas",
+        "OPS":"FM Backoffice",
+        "Serial_Number":"VNA10M7A",
+        "Model":"T22254PC",
+        "Display_Manufacturer":"LEN",
+        "Computer_Current_User_Display_Name":"Nieves Salmeron"
+    },
+    {
+        "SITE":"FM Barajas",
+        "OPS":"FM Backoffice",
+        "Serial_Number":"WFH",
+        "Model":"WFH",
+        "Display_Manufacturer":"WFH",
+        "Computer_Current_User_Display_Name":"Bego\u00f1a Lafuente"
+    },
+    {
+        "SITE":"FM Barajas",
+        "OPS":"FM Backoffice",
+        "Serial_Number":"WFH",
+        "Model":"WFH",
+        "Display_Manufacturer":"WFH",
+        "Computer_Current_User_Display_Name":"Elisa Mcpherson"
+    },
+    {
+        "SITE":"FM Barajas",
+        "OPS":"FM Fashion",
+        "Serial_Number":"CNK83119RB",
+        "Model":"HP P223",
+        "Display_Manufacturer":"HPN",
+        "Computer_Current_User_Display_Name":"Veronica Estrada"
+    },
+    {
+        "SITE":"FM Barajas",
+        "OPS":"FM Air",
+        "Serial_Number":"NO USE",
+        "Model":"NO USE",
+        "Display_Manufacturer":"HPN",
+        "Computer_Current_User_Display_Name":"Borja Hernandez"
+    },
+    {
+        "SITE":"FM Barajas",
+        "OPS":"FM Fashion",
+        "Serial_Number":"CNK83119S9",
+        "Model":"HP P223",
+        "Display_Manufacturer":"HPN",
+        "Computer_Current_User_Display_Name":"Fabiana Hernandez"
+    },
+    {
+        "SITE":"FM Barajas",
+        "OPS":"FM Fashion",
+        "Serial_Number":"WFH",
+        "Model":"WFH",
+        "Display_Manufacturer":"WFH",
+        "Computer_Current_User_Display_Name":"Marta Lopez"
+    },
+    {
+        "SITE":"FM Barajas",
+        "OPS":"FM Air",
+        "Serial_Number":"CNK83119SH",
+        "Model":"HP P223",
+        "Display_Manufacturer":"HPN",
+        "Computer_Current_User_Display_Name":"Josiane Nunes"
+    },
+    {
+        "SITE":"FM Barajas",
+        "OPS":"FM Fashion",
+        "Serial_Number":"CNK83119FB",
+        "Model":"HP P223",
+        "Display_Manufacturer":"HPN",
+        "Computer_Current_User_Display_Name":"Yaiza Rueda"
+    }
+]
