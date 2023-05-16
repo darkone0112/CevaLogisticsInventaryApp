@@ -7,6 +7,7 @@ from tkinter import messagebox, ttk
 class DatabaseApp:
     def __init__(self, root):
         self.root = root
+        self.root.state('zoomed')
         self.root.configure(bg='#002147') # Set background color of root
         #Other Options:
         #---> #4d4dff Neon Blue
@@ -28,6 +29,12 @@ class DatabaseApp:
         # Connection
         self.connection = self.create_connection("localhost", "VsCode", "2458", "inventary")
         
+
+
+
+
+
+        
         # Create cursor
         self.context_menu = Menu(self.root, tearoff=0)
         self.context_menu.add_command(label='Update', command=self.update_row_dialog)
@@ -43,13 +50,24 @@ class DatabaseApp:
         self.table_menu.add_command(label='ricoh', command=lambda: self.change_table('ricoh'))
         self.table_menu.add_command(label='zebraont', command=lambda: self.change_table('zebraont'))
 
+                # Add button
+        self.actions_menu = Menu(self.menu_bar, bg='#003366', fg='white')  # Set actions menu colors
+        self.menu_bar.add_cascade(label='Actions', menu=self.actions_menu)
+        
+        # Add new row
+        self.actions_menu.add_command(label='Add New', command=self.add_new_row)
+        self.actions_menu.add_command(label='Filter', command=self.filter_dialog)
+        self.actions_menu.add_command(label='Refresh', command=self.refresh_table)
+
+
+
         # Initialize currently selected table and row
         self.current_table = None
         self.current_row = None
 
         # Create Treeview
         style = ttk.Style()
-        style.configure("Treeview", background="#002147", foreground="white", fieldbackground="#002147 ")  # Set treeview colors
+        style.configure("Treeview", background="#002147", foreground="white", fieldbackground="#002147")
         style.configure("Treeview.Heading", background="#002147", foreground="black")  # Set treeview heading colors
         self.tree = ttk.Treeview(self.root, style="Treeview", height=700)
         self.tree.pack()
@@ -59,7 +77,7 @@ class DatabaseApp:
         
         
         #Display default table
-        self.change_table('ricoh')
+        self.change_table('beta_inventory_barajas')
         
         # Hide the first column
         self.tree.column('#0', width=0, stretch=NO)
@@ -67,7 +85,6 @@ class DatabaseApp:
         
         #Bind right click event
         self.tree.bind("<Button-3>", self.show_context_menu)
-
     def create_connection(self, host_name, user_name, user_password, db_name):
         connection = None
         try:
@@ -85,6 +102,7 @@ class DatabaseApp:
 
     def change_table(self, table_name):
         self.current_table = table_name
+
         # Fetch data from table
         cursor = self.connection.cursor()
         cursor.execute(f"SELECT * FROM {table_name}")
@@ -101,24 +119,29 @@ class DatabaseApp:
         if table_name in self.column_configurations:
             # If a configuration exists for this table, apply it
             for col, width in self.column_configurations[table_name].items():
-                self.tree.column(col, width=120, anchor="center")
+                self.tree.column(col, width=220, anchor="center")
         else:
             # Otherwise, create a new configuration
             self.column_configurations[table_name] = {}
             for col in column_names:
-                self.tree.column(col, width=120, anchor="center")  # adjust the width to suit your needs
-                self.column_configurations[table_name][col] = 120  # Store the width
+                self.tree.column(col, width=220, anchor="center")  # adjust the width to suit your needs
+                self.column_configurations[table_name][col] = 220  # Store the width
 
         # Set column titles for each column
         for col in column_names:
             self.tree.heading(col, text=col)
 
         # Insert new data
-        for row in cursor.fetchall():
+        rows = cursor.fetchall()
+        for row in rows:
             self.tree.insert('', 'end', values=row)
             
         # Hide the first column 
         self.tree.column('id', width=0, stretch=NO)
+        
+        # Set the height of the treeview based on the number of rows
+        self.tree.configure(height=len(rows))
+
 
 
 
@@ -165,15 +188,42 @@ class DatabaseApp:
     def filter_table(self, column_name, value):
         cursor = self.connection.cursor()
         cursor.execute(f"SELECT * FROM {self.current_table} WHERE {column_name} LIKE '%{value}%'")
+        rows = cursor.fetchall()
+
+        # Get column names
+        column_names = [i[0] for i in cursor.description]
 
         # Clear treeview
         for i in self.tree.get_children():
             self.tree.delete(i)
 
+        # Configure treeview columns
+        self.tree["columns"] = column_names
+        if self.current_table in self.column_configurations:
+            # If a configuration exists for this table, apply it
+            for col, width in self.column_configurations[self.current_table].items():
+                self.tree.column(col, width=120, anchor="center")
+        else:
+            # Otherwise, create a new configuration
+            self.column_configurations[self.current_table] = {}
+            for col in column_names:
+                self.tree.column(col, width=120, anchor="center")  # adjust the width to suit your needs
+                self.column_configurations[self.current_table][col] = 120  # Store the width
+
+        # Set column titles for each column
+        for col in column_names:
+            self.tree.heading(col, text=col)
+
         # Insert new data
-                # Insert new data
-        for row in cursor.fetchall():
+        for row in rows:
             self.tree.insert('', 'end', values=row)
+
+        # Adjust the height of the treeview
+        self.tree.configure(height=min(len(rows), 700))  # adjust the maximum height to your preference
+
+
+
+
     def show_context_menu(self, event):
     # Select row under mouse
         self.tree.identify_row(event.y)
@@ -196,6 +246,61 @@ class DatabaseApp:
         # Add a button that updates the row when clicked
         Button(update_dialog, text="Update", command=lambda: self.update_row([e.get() if isinstance(e, Entry) else e for e in entries])).grid(row=len(self.current_row)-1, column=0, columnspan=2)
 
+
+    def add_new_row(self):
+        # Create a new Toplevel window
+        add_dialog = Toplevel(self.root)
+        add_dialog.title("Add new row")
+
+        # Create an Entry for each field in the row
+        entries = []
+
+        cursor = self.connection.cursor()
+        cursor.execute(f"SHOW COLUMNS FROM {self.current_table}")
+        column_names = [column[0] for column in cursor.fetchall()]
+        
+        for i, column_name in enumerate(column_names[1:], start=1):  # starting from 1 to skip 'id' column
+            Label(add_dialog, text=f"Field {i}").grid(row=i, column=0)
+            entry = Entry(add_dialog)
+            entry.grid(row=i, column=1)
+            entries.append(entry)
+
+        # Add a button that adds the row when clicked
+        Button(add_dialog, text="Add", command=lambda: self.insert_row([e.get() for e in entries])).grid(row=len(column_names), column=0, columnspan=2)
+    def insert_row(self, new_values):
+        cursor = self.connection.cursor()
+        
+        # Fetch column names
+        cursor.execute(f"SHOW COLUMNS FROM {self.current_table}")
+        column_names = [column[0] for column in cursor.fetchall()][1:]  # Skip 'id' column
+
+        insert_query = f"INSERT INTO {self.current_table} ({', '.join(column_names)}) VALUES ({', '.join(['%s'] * len(new_values))})"
+        cursor.execute(insert_query, new_values)
+        self.connection.commit()
+        self.change_table(self.current_table)  # Refresh table
+        
+        
+    def filter_dialog(self):
+        # Create a new Toplevel window
+        filter_dialog = Toplevel(self.root)
+        filter_dialog.title("Filter")
+
+        # Create labels and entries for the column name and filter value
+        Label(filter_dialog, text="Column name").grid(row=0, column=0)
+        column_name_entry = Entry(filter_dialog)
+        column_name_entry.grid(row=0, column=1)
+
+        Label(filter_dialog, text="Filter value").grid(row=1, column=0)
+        filter_value_entry = Entry(filter_dialog)
+        filter_value_entry.grid(row=1, column=1)
+
+        # Add a button that applies the filter when clicked
+        Button(filter_dialog, text="Apply filter",
+            command=lambda: self.filter_table(column_name_entry.get(), filter_value_entry.get())
+            ).grid(row=2, column=0, columnspan=2)
+        
+    def refresh_table(self):
+        self.change_table(self.current_table)
 
 
 
