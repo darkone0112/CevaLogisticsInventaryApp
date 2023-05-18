@@ -1,6 +1,19 @@
 from tkinter import simpledialog
 import mysql.connector
 from mysql.connector import Error
+#todo:
+# The Update and Add function must have some sort of fixed option for the critical columns
+    # Model
+    # OPS
+    # SITE
+# Add the some kind of relatio between BU(Still need the data)
+# Add Stock tables (may be for each kind of device?)
+# Function to add deleted data to the Stock table
+# Function to add new OC to the Stock table as pending
+# Function to export data from a given table to a .csv file
+    # Also will be interesting to export data from an specific filter query result
+
+
 from tkinter import *
 from tkinter import messagebox, ttk
 
