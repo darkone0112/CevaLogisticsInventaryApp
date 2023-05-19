@@ -2,10 +2,10 @@ from tkinter import simpledialog
 import mysql.connector
 from mysql.connector import Error
 #todo:
-# The Update and Add function must have some sort of fixed option for the critical columns
-    # Model
-    # OPS
-    # SITE
+# --->DONE Still Missing the UPDATE part: The Update and Add function must have some sort of fixed option for the critical columns
+                # Model
+                # OPS
+                # SITE
 # Add the some kind of relatio between BU(Still need the data)
 # Add Stock tables (may be for each kind of device?)
 # Function to add deleted data to the Stock table
@@ -270,12 +270,26 @@ class DatabaseApp:
             return option_var
 
         option_dict = {
+            #Computers and Monitors dictionary entries
             'OPS': ["OPS1", "OPS2", "OPS3"],
             'WFH': ["OPS1", "OPS2", "OPS3"],
             'SITE': ["SITE1", "SITE2", "SITE3"],
-            'Type': ["Desktop", "Laptop"],
-            'Model': ["Model1", "Model2", "Model3", "Model4", "Model5"],
-            'PcModel': ["PcModel1", "PcModel2", "PcModel3", "PcModel4", "PcModel5"],
+            'TYPE': ["Desktop", "Laptop"],
+            'MODEL': ["Model1", "Model2", "Model3", "Model4", "Model5"],
+            'PCMODEL': ["PcModel1", "PcModel2", "PcModel3", "PcModel4", "PcModel5"],
+            'DISPLAY_MANUFACTURER': ["DisplayManufacturer1", "DisplayManufacturer2", "DisplayManufacturer3", "DisplayManufacturer4", "DisplayManufacturer5"],
+            ######
+            #Ricoh dictionary entries
+            'RICOHMODEL': ["RicohModel1", "RicohModel2", "RicohModel3", "RicohModel4", "RicohModel5"],
+            'DETAILEDMODEL': ["DetailedModel1", "DetailedModel2", "DetailedModel3", "DetailedModel4", "DetailedModel5"],
+            'IB_CITY': ["IBCity1", "IBCity2", "IBCity3", "IBCity4", "IBCity5"],
+            'LOCODE': ["LOCode1", "LOCode2", "LOCode3", "LOCode4", "LOCode5"],
+            'OPERATION': ["Operation1", "Operation2", "Operation3", "Operation4", "Operation5"],
+            ######
+            #Zebra dictionary entries
+            'OPERATIVA_ACTUAL': ["OperativaActual1", "OperativaActual2", "OperativaActual3", "OperativaActual4", "OperativaActual5"],
+            'POBLACION': ["Poblacion1", "Poblacion2", "Poblacion3", "Poblacion4", "Poblacion5"],
+            'DESCRIPCIÓN': ["Descripcion1", "Descripcion2", "Descripcion3", "Descripcion4", "Descripcion5"],
         }
 
         for i, column_name in enumerate(column_names[1:], start=1):  # starting from 1 to skip 'id' column
