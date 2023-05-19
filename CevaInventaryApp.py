@@ -1,6 +1,19 @@
 from tkinter import simpledialog
 import mysql.connector
 from mysql.connector import Error
+#todo:
+# The Update and Add function must have some sort of fixed option for the critical columns
+    # Model
+    # OPS
+    # SITE
+# Add the some kind of relatio between BU(Still need the data)
+# Add Stock tables (may be for each kind of device?)
+# Function to add deleted data to the Stock table
+# Function to add new OC to the Stock table as pending
+# Function to export data from a given table to a .csv file
+    # Also will be interesting to export data from an specific filter query result
+
+
 from tkinter import *
 from tkinter import messagebox, ttk
 
@@ -46,7 +59,8 @@ class DatabaseApp:
         self.table_menu = Menu(self.menu_bar, bg='#003366', fg='white')  # Set table menu colors
         self.menu_bar.add_cascade(label='Tables', menu=self.table_menu)
         
-        self.table_menu.add_command(label='beta barajas', command=lambda: self.change_table('beta_inventory_barajas'))
+        self.table_menu.add_command(label='barajasComputers', command=lambda: self.change_table('computersBarajas'))
+        self.table_menu.add_command(label='barajasDisplays', command=lambda: self.change_table('beta_inventory_barajas'))
         self.table_menu.add_command(label='ricoh', command=lambda: self.change_table('ricoh'))
         self.table_menu.add_command(label='zebraont', command=lambda: self.change_table('zebraont'))
 
@@ -247,6 +261,33 @@ class DatabaseApp:
         Button(update_dialog, text="Update", command=lambda: self.update_row([e.get() if isinstance(e, Entry) else e for e in entries])).grid(row=len(self.current_row)-1, column=0, columnspan=2)
 
 
+    def generate_row_widgets(self, add_dialog, column_names, entries):
+        def create_option_menu(add_dialog, options, i):
+            option_var = StringVar()
+            option_var.set(options[0])
+            option_menu = OptionMenu(add_dialog, option_var, *options)
+            option_menu.grid(row=i, column=1)
+            return option_var
+
+        option_dict = {
+            'OPS': ["OPS1", "OPS2", "OPS3"],
+            'WFH': ["OPS1", "OPS2", "OPS3"],
+            'SITE': ["SITE1", "SITE2", "SITE3"],
+            'Type': ["Desktop", "Laptop"],
+            'Model': ["Model1", "Model2", "Model3", "Model4", "Model5"],
+            'PcModel': ["PcModel1", "PcModel2", "PcModel3", "PcModel4", "PcModel5"],
+        }
+
+        for i, column_name in enumerate(column_names[1:], start=1):  # starting from 1 to skip 'id' column
+            Label(add_dialog, text=f"{column_name}").grid(row=i, column=0)
+            if column_name.upper() in option_dict:
+                option_var = create_option_menu(add_dialog, option_dict[column_name.upper()], i)
+                entries.append(option_var)
+            else:
+                entry = Entry(add_dialog)
+                entry.grid(row=i, column=1)
+                entries.append(entry)
+
     def add_new_row(self):
         # Create a new Toplevel window
         add_dialog = Toplevel(self.root)
@@ -258,15 +299,12 @@ class DatabaseApp:
         cursor = self.connection.cursor()
         cursor.execute(f"SHOW COLUMNS FROM {self.current_table}")
         column_names = [column[0] for column in cursor.fetchall()]
-        
-        for i, column_name in enumerate(column_names[1:], start=1):  # starting from 1 to skip 'id' column
-            Label(add_dialog, text=f"Field {i}").grid(row=i, column=0)
-            entry = Entry(add_dialog)
-            entry.grid(row=i, column=1)
-            entries.append(entry)
 
+        # Generate widgets for each row
+        self.generate_row_widgets(add_dialog, column_names, entries)
         # Add a button that adds the row when clicked
         Button(add_dialog, text="Add", command=lambda: self.insert_row([e.get() for e in entries])).grid(row=len(column_names), column=0, columnspan=2)
+        
     def insert_row(self, new_values):
         cursor = self.connection.cursor()
         
