@@ -57,6 +57,7 @@ class DatabaseApp:
         self.menu_bar.add_cascade(label='Tables', menu=self.table_menu)
         
         self.table_menu.add_command(label='barajasComputers', command=lambda: self.change_table('computersBarajas'))
+        self.table_menu.add_command(label='barajasStock', command=lambda: self.change_table('stockBarajas'))
         self.table_menu.add_command(label='barajasDisplays', command=lambda: self.change_table('beta_inventory_barajas'))
         self.table_menu.add_command(label='ricoh', command=lambda: self.change_table('ricoh'))
         self.table_menu.add_command(label='zebraont', command=lambda: self.change_table('zebraont'))
@@ -165,32 +166,44 @@ class DatabaseApp:
 
 
     def delete_row(self):
+        #Still there are errors if i try to delete directly from stock
+        #if self.current_table.startswith("stock"):
+            
         if self.current_row:
             cursor = self.connection.cursor()
-            cursor.execute(f"DELETE FROM {self.current_table} WHERE id = {self.current_row[0]}")
-            self.connection.commit()
+            try:
+                # Retrieve column names from the current table
+                cursor.execute(f"SHOW COLUMNS FROM {self.current_table}")
+                column_names = [column[0] for column in cursor.fetchall()]
 
-            # Retrieve column names from the current table
-            cursor.execute(f"SHOW COLUMNS FROM {self.current_table}")
-            column_names = [column[0] for column in cursor.fetchall()]
+                # Generate the stock table name based on the current table name
+                table_name_parts = self.current_table.split("computers")  # Assuming the table name format is "computers{suffix}"
+                if len(table_name_parts) == 2:
+                    stock_table_name = f"stock{table_name_parts[1]}"
+                else:
+                    stock_table_name = f"stock{self.current_table}"
 
-            # Generate the stock table name based on the current table name
-            table_name_parts = self.current_table.split("computers")  # Assuming the table name format is "computers{suffix}"
-            if len(table_name_parts) == 2:
-                stock_table_name = f"stock{table_name_parts[1]}"
-            else:
-                stock_table_name = f"stock{self.current_table}"
+                # Generate the INSERT statement for the stock table
+                insert_columns = ", ".join(column_names)
+                insert_values = f"SELECT {', '.join(column_names)} FROM {self.current_table} WHERE id = {self.current_row[0]}"
+                insert_query = f"INSERT INTO {stock_table_name} ({insert_columns}) {insert_values}"
 
-            # Generate the INSERT statement for the stock table
-            insert_columns = ", ".join(column_names)
-            insert_values = f"SELECT {', '.join(column_names)} FROM {self.current_table} WHERE id = {self.current_row[0]}"
-            insert_query = f"INSERT INTO {stock_table_name} ({insert_columns}) {insert_values}"
-            cursor.execute(insert_query)
-            self.connection.commit()
+                # Execute INSERT statement
+                cursor.execute(insert_query)
+                self.connection.commit()
 
-            self.change_table(self.current_table)  # Refresh table
-            print ("Row deleted successfully")
-            print ("inserted: ", insert_query)
+                # Execute DELETE statement
+                cursor.execute(f"DELETE FROM {self.current_table} WHERE id = {self.current_row[0]}")
+                self.connection.commit()
+
+                self.change_table(self.current_table)  # Refresh table
+                print("Row deleted successfully and inserted into stock table")
+            except Exception as e:
+                print(f"Error occurred: {e}")
+        else:
+            print("No row selected")
+
+
 
 
     def update_row(self, new_values):
