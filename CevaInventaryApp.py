@@ -2,11 +2,14 @@ from tkinter import simpledialog
 import mysql.connector
 from mysql.connector import Error
 #todo:
-# --->DONE Still Missing the UPDATE part: The Update and Add function must have some sort of fixed option for the critical columns
+# --->DONEThe Update and Add function must have some sort of fixed option for the critical columns
                 # Model
                 # OPS
                 # SITE
-# Add the some kind of relatio between BU(Still need the data)
+        # The update part must be tested more in depth
+        
+# Addnsome kind of relation between BU and the computer/user/operation(Still need the data)
+    #Maybe we can use mackup data to test the viability of the Function in the actual DB design
 # Add Stock tables (may be for each kind of device?)
 # Function to add deleted data to the Stock table
 # Function to add new OC to the Stock table as pending
@@ -41,12 +44,6 @@ class DatabaseApp:
         self.column_configurations = {}
         # Connection
         self.connection = self.create_connection("localhost", "VsCode", "2458", "inventary")
-        
-
-
-
-
-
         
         # Create cursor
         self.context_menu = Menu(self.root, tearoff=0)
@@ -244,22 +241,33 @@ class DatabaseApp:
         self.context_menu.post(event.x_root, event.y_root)
 
     def update_row_dialog(self):
+        # Check if a row has been selected
+        if not self.current_row:
+            messagebox.showinfo("No row selected", "Please select a row to update")
+            return
+
         # Create a new Toplevel window
         update_dialog = Toplevel(self.root)
         update_dialog.title("Update row")
 
-        # Create an Entry for each field in the row, except 'id'
-        entries = [self.current_row[0]]  # start with 'id' value
-        for i, value in enumerate(self.current_row[1:], start=1):  # starting from 1
-            Label(update_dialog, text=f"Field {i}").grid(row=i-1, column=0)
-            entry = Entry(update_dialog)
-            entry.grid(row=i-1, column=1)
-            entry.insert(0, value)
-            entries.append(entry)
+        # Create an Entry for each field in the row
+        entries = []
+        cursor = self.connection.cursor()
+        cursor.execute(f"SHOW COLUMNS FROM {self.current_table}")
+        column_names = [column[0] for column in cursor.fetchall()]
+
+        # Generate widgets for each row
+        self.generate_row_widgets(update_dialog, column_names, entries)
+
+        # Set the value of each widget to the current value of the row
+        for entry, value in zip(entries, self.current_row[1:]):  # starting from index 1 to skip 'id' column
+            if isinstance(entry, StringVar):
+                entry.set(value)
+            else:
+                entry.insert(0, value)
 
         # Add a button that updates the row when clicked
-        Button(update_dialog, text="Update", command=lambda: self.update_row([e.get() if isinstance(e, Entry) else e for e in entries])).grid(row=len(self.current_row)-1, column=0, columnspan=2)
-
+        Button(update_dialog, text="Update", command=lambda: self.update_row([self.current_row[0]] + [e.get() if isinstance(e, Entry) else e.get() for e in entries])).grid(row=len(column_names), column=0, columnspan=2, pady=10)
 
     def generate_row_widgets(self, add_dialog, column_names, entries):
         def create_option_menu(add_dialog, options, i):
