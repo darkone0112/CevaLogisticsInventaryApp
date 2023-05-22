@@ -8,7 +8,7 @@ from mysql.connector import Error
                 # SITE
         # The update part must be tested more in depth
         
-# Addnsome kind of relation between BU and the computer/user/operation(Still need the data)
+# Add some kind of relation between BU and the computer/user/operation(Still need the data)
     #Maybe we can use mackup data to test the viability of the Function in the actual DB design
 # Add Stock tables (may be for each kind of device?)
 # Function to add deleted data to the Stock table
@@ -163,12 +163,35 @@ class DatabaseApp:
             self.current_row = self.tree.item(selected_item)['values']
 
 
+
     def delete_row(self):
         if self.current_row:
             cursor = self.connection.cursor()
-            cursor.execute(f"DELETE FROM {self.current_table} WHERE id = {self.current_row[0]}") # Assuming the first column is the ID
+            cursor.execute(f"DELETE FROM {self.current_table} WHERE id = {self.current_row[0]}")
             self.connection.commit()
+
+            # Retrieve column names from the current table
+            cursor.execute(f"SHOW COLUMNS FROM {self.current_table}")
+            column_names = [column[0] for column in cursor.fetchall()]
+
+            # Generate the stock table name based on the current table name
+            table_name_parts = self.current_table.split("computers")  # Assuming the table name format is "computers{suffix}"
+            if len(table_name_parts) == 2:
+                stock_table_name = f"stock{table_name_parts[1]}"
+            else:
+                stock_table_name = f"stock{self.current_table}"
+
+            # Generate the INSERT statement for the stock table
+            insert_columns = ", ".join(column_names)
+            insert_values = f"SELECT {', '.join(column_names)} FROM {self.current_table} WHERE id = {self.current_row[0]}"
+            insert_query = f"INSERT INTO {stock_table_name} ({insert_columns}) {insert_values}"
+            cursor.execute(insert_query)
+            self.connection.commit()
+
             self.change_table(self.current_table)  # Refresh table
+            print ("Row deleted successfully")
+            print ("inserted: ", insert_query)
+
 
     def update_row(self, new_values):
         if self.current_row:
