@@ -2,7 +2,15 @@ from tkinter import simpledialog
 import mysql.connector
 from mysql.connector import Error
 #todo:
-# --->DONEThe Update and Add function must have some sort of fixed option for the critical columns
+# Must remade the DDBB structure with the new design
+    #The new design will have a table for each kind of device inventory for example
+        #ComputersInventory
+        #DisplaysInventory
+    #And a table for each kind of device stock for example
+        #ComputersStock
+        #DisplaysStock
+        
+# --->DONE The Update and Add function must have some sort of fixed option for the critical columns
                 # Model
                 # OPS
                 # SITE
@@ -10,9 +18,17 @@ from mysql.connector import Error
         
 # Add some kind of relation between BU and the computer/user/operation(Still need the data)
     #Maybe we can use mackup data to test the viability of the Function in the actual DB design
-# Add Stock tables (may be for each kind of device?)
-# Function to add deleted data to the Stock table
+    
+#--->ALMOST DONE (must change the prefix) Add Stock tables (may be for each kind of device?)
+    #New design will have only a Computer table and various stock tables for each kind of device
+    #So a ComputersInventory and a ComputersStock and for example a DisplaysInventory and a DisplaysStock
+    #Instead of the actual approach of having a table for each site
+    #More Details in top comment
+    
+#--->DONE Function to add deleted data to the Stock table
+
 # Function to add new OC to the Stock table as pending
+
 # Function to export data from a given table to a .csv file
     # Also will be interesting to export data from an specific filter query result
 
@@ -166,42 +182,48 @@ class DatabaseApp:
 
 
     def delete_row(self):
-        #Still there are errors if i try to delete directly from stock
-        #if self.current_table.startswith("stock"):
-            
         if self.current_row:
             cursor = self.connection.cursor()
             try:
-                # Retrieve column names from the current table
-                cursor.execute(f"SHOW COLUMNS FROM {self.current_table}")
-                column_names = [column[0] for column in cursor.fetchall()]
-
-                # Generate the stock table name based on the current table name
-                table_name_parts = self.current_table.split("computers")  # Assuming the table name format is "computers{suffix}"
-                if len(table_name_parts) == 2:
-                    stock_table_name = f"stock{table_name_parts[1]}"
+                # Check if the current table is a stock table
+                if self.current_table.startswith("stock"):
+                    # Execute DELETE statement without inserting into another table
+                    cursor.execute(f"DELETE FROM {self.current_table} WHERE id = {self.current_row[0]}")
+                    self.connection.commit()
+                    print("Row deleted successfully from stock table")
+                    self.change_table(self.current_table)
                 else:
-                    stock_table_name = f"stock{self.current_table}"
+                    # Retrieve column names from the current table
+                    cursor.execute(f"SHOW COLUMNS FROM {self.current_table}")
+                    column_names = [column[0] for column in cursor.fetchall()]
 
-                # Generate the INSERT statement for the stock table
-                insert_columns = ", ".join(column_names)
-                insert_values = f"SELECT {', '.join(column_names)} FROM {self.current_table} WHERE id = {self.current_row[0]}"
-                insert_query = f"INSERT INTO {stock_table_name} ({insert_columns}) {insert_values}"
+                    # Generate the stock table name based on the current table name
+                    table_name_parts = self.current_table.split("computers")  # Assuming the table name format is "computers{suffix}"
+                    if len(table_name_parts) == 2:
+                        stock_table_name = f"stock{table_name_parts[1]}"
+                    else:
+                        stock_table_name = f"stock{self.current_table}"
 
-                # Execute INSERT statement
-                cursor.execute(insert_query)
-                self.connection.commit()
+                    # Generate the INSERT statement for the stock table
+                    insert_columns = ", ".join(column_names)
+                    insert_values = f"SELECT {', '.join(column_names)} FROM {self.current_table} WHERE id = {self.current_row[0]}"
+                    insert_query = f"INSERT INTO {stock_table_name} ({insert_columns}) {insert_values}"
 
-                # Execute DELETE statement
-                cursor.execute(f"DELETE FROM {self.current_table} WHERE id = {self.current_row[0]}")
-                self.connection.commit()
+                    # Execute INSERT statement
+                    cursor.execute(insert_query)
+                    self.connection.commit()
 
-                self.change_table(self.current_table)  # Refresh table
-                print("Row deleted successfully and inserted into stock table")
+                    # Execute DELETE statement
+                    cursor.execute(f"DELETE FROM {self.current_table} WHERE id = {self.current_row[0]}")
+                    self.connection.commit()
+
+                    self.change_table(self.current_table)  # Refresh table
+                    print("Row deleted successfully and inserted into stock table")
             except Exception as e:
                 print(f"Error occurred: {e}")
         else:
             print("No row selected")
+
 
 
 
