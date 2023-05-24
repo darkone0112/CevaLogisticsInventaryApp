@@ -8,7 +8,6 @@
         "S_N":"8CC9294PNC",
         "User":"madwarehouse",
         "User_AD":"warehousema",
-        "Status":"Activo",
         "PO_Number":"00766OW19262546"
     },
     {
@@ -20,7 +19,6 @@
         "S_N":"8CC9134FG5",
         "User":"Roberto Barci",
         "User_AD":"warehousema",
-        "Status":"Activo",
         "PO_Number":"00766OW19262546"
     },
     {
@@ -32,7 +30,6 @@
         "S_N":"5CG14376D0",
         "User":"Sylvia Rodriguez Martin",
         "User_AD":"Lopezmd",
-        "Status":"Activo",
         "PO_Number":"00768OW21613897"
     },
     {
@@ -44,7 +41,6 @@
         "S_N":"5CG1422CH2",
         "User":"Cristina Camara",
         "User_AD":"camarac",
-        "Status":"Activo",
         "PO_Number":"00766OW21644576"
     },
     {
@@ -56,7 +52,6 @@
         "S_N":"5CG14376DN",
         "User":"Miguel Angel jimenez",
         "User_AD":"jimenezbma",
-        "Status":"Activo",
         "PO_Number":"00766OW21613898"
     },
     {
@@ -68,7 +63,6 @@
         "S_N":"5CG1423PC7",
         "User":"Dina Galiano",
         "User_AD":"Galianod",
-        "Status":"Activo",
         "PO_Number":"00766OW21637215"
     },
     {
@@ -80,7 +74,6 @@
         "S_N":"5CG1423PCQ",
         "User":"Pedro Monis",
         "User_AD":"MonisP",
-        "Status":"Activo",
         "PO_Number":"00766OW21637193"
     },
     {
@@ -92,7 +85,6 @@
         "S_N":"5CG1423PCV",
         "User":"Beatriz Moreno",
         "User_AD":"MorenoB",
-        "Status":"Activo",
         "PO_Number":"00766OW21637193"
     },
     {
@@ -104,7 +96,6 @@
         "S_N":"5CG1423PCB",
         "User":"Armando Bueno",
         "User_AD":"BuenoA",
-        "Status":"Activo",
         "PO_Number":"00766OW21637193"
     },
     {
@@ -116,7 +107,6 @@
         "S_N":"5CG1423PCP",
         "User":"Borja Hernandez",
         "User_AD":"hernandezbo",
-        "Status":"Activo",
         "PO_Number":"00766OW21637193"
     },
     {
@@ -128,7 +118,6 @@
         "S_N":"5CG1423PCH",
         "User":"Elena Mu\u00f1oz",
         "User_AD":"munoze",
-        "Status":"Activo",
         "PO_Number":"00766OW21637"
     },
     {
@@ -140,7 +129,6 @@
         "S_N":"YN007FNL",
         "User":"Javier Menendez",
         "User_AD":"menendezJ",
-        "Status":"Activo",
         "PO_Number":"None"
     },
     {
@@ -152,7 +140,6 @@
         "S_N":"5CG10620TJ",
         "User":"Alberto Garcia Castro ",
         "User_AD":"castroag",
-        "Status":"Activo",
         "PO_Number":"None"
     },
     {
@@ -164,7 +151,6 @@
         "S_N":"5CG9309N0Z",
         "User":"Nieves Salmer\u00f3n",
         "User_AD":"salmeronn",
-        "Status":"Activo",
         "PO_Number":"00766OW19278139"
     },
     {
@@ -176,7 +162,6 @@
         "S_N":"None",
         "User":"None",
         "User_AD":"None",
-        "Status":"None",
         "PO_Number":"None"
     },
     {
@@ -188,7 +173,6 @@
         "S_N":"5CG14376DG",
         "User":"Gabriela Cervantes",
         "User_AD":"cervantesg",
-        "Status":"Activo",
         "PO_Number":"00768OW21613896"
     },
     {
@@ -200,7 +184,6 @@
         "S_N":"5CG0473D1K",
         "User":"Kevin Delgado",
         "User_AD":"delgadok",
-        "Status":"Activo",
         "PO_Number":"None"
     },
     {
@@ -212,7 +195,6 @@
         "S_N":"5CG0473D1B",
         "User":"Veronica Estrada",
         "User_AD":"estradav",
-        "Status":"Activo",
         "PO_Number":"None"
     },
     {
@@ -224,7 +206,6 @@
         "S_N":"5CG1423PD1",
         "User":"Beatriz Fern\u00e1ndez",
         "User_AD":"fernandezbe",
-        "Status":"Activo",
         "PO_Number":"None"
     },
     {
@@ -236,7 +217,6 @@
         "S_N":"5CG0473D1D",
         "User":"Lydia Velasco",
         "User_AD":"velascol",
-        "Status":"Activo",
         "PO_Number":"None"
     },
     {
@@ -248,7 +228,6 @@
         "S_N":"5CG0301PY6",
         "User":"Pilar Gonzalo",
         "User_AD":"gonzalop",
-        "Status":"Activo",
         "PO_Number":"00766OW20511098"
     },
     {
@@ -260,7 +239,6 @@
         "S_N":"5CG74506B2",
         "User":"Borja Hernandez",
         "User_AD":"hernandezbo",
-        "Status":"Activo",
         "PO_Number":"00766OW17083075"
     },
     {
@@ -272,7 +250,6 @@
         "S_N":"5CG1030JVY",
         "User":"Guzman Hernandez",
         "User_AD":"hernandezg",
-        "Status":"Activo",
         "PO_Number":"None"
     },
     {
@@ -284,7 +261,6 @@
         "S_N":"5CG9023J75",
         "User":"Patricia Hernandez",
         "User_AD":"hernandezpat",
-        "Status":"Activo",
         "PO_Number":"00766OW19258009"
     },
     {
@@ -296,7 +272,6 @@
         "S_N":"5CG14376D6",
         "User":"Javier Sanchez",
         "User_AD":"marine",
-        "Status":"Activo",
         "PO_Number":"None"
     },
     {
@@ -308,7 +283,6 @@
         "S_N":"YN007G15",
         "User":"Patricia Mori",
         "User_AD":"morip",
-        "Status":"Activo",
         "PO_Number":"None"
     },
     {
@@ -320,7 +294,6 @@
         "S_N":"5CG8384V2Y",
         "User":"Rosa Moreno",
         "User_AD":"morenoro",
-        "Status":"Activo",
         "PO_Number":"None"
     },
     {
@@ -332,7 +305,6 @@
         "S_N":"YN007FH2",
         "User":"Bego\u00f1a Lafuente",
         "User_AD":"lafuenteb",
-        "Status":"Activo",
         "PO_Number":"None"
     },
     {
@@ -344,7 +316,6 @@
         "S_N":"YN007FES",
         "User":"Elisa Mcpherson",
         "User_AD":"mcphersone",
-        "Status":"Activo",
         "PO_Number":"None"
     },
     {
@@ -356,7 +327,6 @@
         "S_N":"5CG8104292",
         "User":"Alberto VIllegas",
         "User_AD":"villegasa",
-        "Status":"Activo",
         "PO_Number":"None"
     },
     {
@@ -368,7 +338,6 @@
         "S_N":"5CG14376DL",
         "User":"Sonia Aramburu",
         "User_AD":"aramburus",
-        "Status":"Activo",
         "PO_Number":"None"
     },
     {
@@ -380,7 +349,6 @@
         "S_N":"5CG0104ZKR",
         "User":"Ivan Villalobos",
         "User_AD":"Villaloboss",
-        "Status":"Activo",
         "PO_Number":"None"
     },
     {
@@ -392,7 +360,6 @@
         "S_N":"5CG1030JWG",
         "User":"Miguel Hern\u00e1ndez",
         "User_AD":"robledoj",
-        "Status":"Activo",
         "PO_Number":"None"
     },
     {
@@ -404,7 +371,6 @@
         "S_N":"5CG106210S",
         "User":"Josiane Nunez",
         "User_AD":"nunesjo",
-        "Status":"Activo",
         "PO_Number":"None"
     },
     {
@@ -416,7 +382,6 @@
         "S_N":"5CG1423PC3",
         "User":"Yaiza Rueda",
         "User_AD":"Rueday",
-        "Status":"Activo",
         "PO_Number":"None"
     },
     {
@@ -428,7 +393,6 @@
         "S_N":"5CG14376CD",
         "User":"Olga Nunez",
         "User_AD":"nunezo",
-        "Status":"Activo",
         "PO_Number":"None"
     },
     {
@@ -440,7 +404,6 @@
         "S_N":"5CG14376CW",
         "User":"Serena Nannetti Francia",
         "User_AD":"nannettis",
-        "Status":"Activo",
         "PO_Number":"None"
     },
     {
@@ -452,7 +415,6 @@
         "S_N":"5CG14376DC",
         "User":"Laura Sanchez",
         "User_AD":"sanchezlaur",
-        "Status":"Activo",
         "PO_Number":"None"
     },
     {
@@ -464,7 +426,6 @@
         "S_N":"5CG83538JC",
         "User":"Carmen Rus",
         "User_AD":"rusC",
-        "Status":"Activo",
         "PO_Number":"None"
     },
     {
@@ -476,7 +437,6 @@
         "S_N":"5CG91044PX",
         "User":"Carina Rodriguez",
         "User_AD":"RodriguezC",
-        "Status":"Activo",
         "PO_Number":"None"
     },
     {
@@ -488,7 +448,6 @@
         "S_N":"5CG0473D17",
         "User":"Cristina Villanueva",
         "User_AD":"Villanuevacr",
-        "Status":"Activo",
         "PO_Number":"None"
     },
     {
@@ -500,7 +459,6 @@
         "S_N":"5CG0473D1G",
         "User":"Mikel Iturri",
         "User_AD":"IturriM",
-        "Status":"Activo",
         "PO_Number":"None"
     },
     {
@@ -512,7 +470,6 @@
         "S_N":"5CG1422CHF",
         "User":"Arantxa Garcia",
         "User_AD":"garicaaran",
-        "Status":"Activo",
         "PO_Number":"None"
     },
     {
@@ -524,7 +481,6 @@
         "S_N":"5CG1422CH3",
         "User":"Diana Reyes",
         "User_AD":"reyes",
-        "Status":"Activo",
         "PO_Number":"None"
     },
     {
@@ -536,7 +492,6 @@
         "S_N":"5CG0473D1M",
         "User":"Fabiana Hernandez",
         "User_AD":"hernandezfa",
-        "Status":"Activo",
         "PO_Number":"None"
     },
     {
@@ -548,7 +503,6 @@
         "S_N":"5CG14376D4",
         "User":"Mariluz Macias",
         "User_AD":"maciasM",
-        "Status":"Activo",
         "PO_Number":"None"
     },
     {
@@ -560,7 +514,6 @@
         "S_N":"5CG1423PCD",
         "User":"Marta Lopez",
         "User_AD":"Lopezmart",
-        "Status":"Activo",
         "PO_Number":"None"
     },
     {
@@ -572,7 +525,6 @@
         "S_N":"5CG14376D1",
         "User":"Celia Corvi",
         "User_AD":"corviC",
-        "Status":"Activo",
         "PO_Number":"00766OW21613897"
     },
     {
@@ -584,7 +536,6 @@
         "S_N":"5CG034106K",
         "User":"Mateo Cardona",
         "User_AD":"cardonam",
-        "Status":"Activo",
         "PO_Number":"None"
     }
 ]

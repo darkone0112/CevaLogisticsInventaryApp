@@ -1,15 +1,42 @@
 from tkinter import simpledialog
+import tkinter
+from tkinter import messagebox
 import mysql.connector
 from mysql.connector import Error
 #todo:
-# The Update and Add function must have some sort of fixed option for the critical columns
-    # Model
-    # OPS
-    # SITE
-# Add the some kind of relatio between BU(Still need the data)
-# Add Stock tables (may be for each kind of device?)
-# Function to add deleted data to the Stock table
+#Reminder: There is a lot of redundant code in the row functions, must be optimized
+#The list of operation are working great, but need to constraint the abailavility of the operations to the site, for example Barajas site has no Amazone operation
+# --->DONE Add new function to move data from the inventory table and stock table to the obsolete table
+# --->DONE Must remade the DDBB structure with the new design
+        #The new design will have a table for each kind of device inventory for example
+            #ComputersInventory
+            #DisplaysInventory
+        #And a table for each kind of device stock for example
+            #ComputersStock
+            #DisplaysStock
+        #Add a Table for obsolete devices
+            #ComputersObsolete
+            #DisplaysObsolete
+        
+# --->DONE The Update and Add function must have some sort of fixed option for the critical columns
+                # Model
+                # OPS
+                # SITE
+        # The update part must be tested more in depth
+        
+# Add some kind of relation between BU and the computer/user/operation(Still need the data)
+    #Maybe we can use mackup data to test the viability of the Function in the actual DB design
+    
+#--->DONE(must change the prefix) Add Stock tables (may be for each kind of device?)
+        #New design will have only a Computer table and various stock tables for each kind of device
+        #So a ComputersInventory and a ComputersStock and for example a DisplaysInventory and a DisplaysStock
+        #Instead of the actual approach of having a table for each site
+        #More Details in top comment
+    
+#--->DONE Function to add deleted data to the Stock table
+
 # Function to add new OC to the Stock table as pending
+
 # Function to export data from a given table to a .csv file
     # Also will be interesting to export data from an specific filter query result
 
@@ -42,15 +69,12 @@ class DatabaseApp:
         # Connection
         self.connection = self.create_connection("localhost", "VsCode", "2458", "inventary")
         
-
-
-
-
-
-        
         # Create cursor
         self.context_menu = Menu(self.root, tearoff=0)
         self.context_menu.add_command(label='Update', command=self.update_row_dialog)
+        self.context_menu.add_command(label='Assign', command=self.main_row)
+        self.context_menu.add_command(label='Stock', command=self.stock_row)
+        self.context_menu.add_command(label='Obsolete', command=self.obsolete_row)
         self.context_menu.add_command(label='Delete', command=self.delete_row)
         
         # Create UI elements
@@ -59,7 +83,9 @@ class DatabaseApp:
         self.table_menu = Menu(self.menu_bar, bg='#003366', fg='white')  # Set table menu colors
         self.menu_bar.add_cascade(label='Tables', menu=self.table_menu)
         
-        self.table_menu.add_command(label='barajasComputers', command=lambda: self.change_table('computersBarajas'))
+        self.table_menu.add_command(label='barajasComputers', command=lambda: self.change_table('computers'))
+        self.table_menu.add_command(label='barajasStock', command=lambda: self.change_table('stockComputers'))
+        self.table_menu.add_command(label='barajasObsolete', command=lambda: self.change_table('obsoleteComputers'))
         self.table_menu.add_command(label='barajasDisplays', command=lambda: self.change_table('beta_inventory_barajas'))
         self.table_menu.add_command(label='ricoh', command=lambda: self.change_table('ricoh'))
         self.table_menu.add_command(label='zebraont', command=lambda: self.change_table('zebraont'))
@@ -73,7 +99,9 @@ class DatabaseApp:
         self.actions_menu.add_command(label='Filter', command=self.filter_dialog)
         self.actions_menu.add_command(label='Refresh', command=self.refresh_table)
 
-
+        # Add status label
+        #self.status_label = tkinter.Label(root, text="")
+        #self.status_label.pack()
 
         # Initialize currently selected table and row
         self.current_table = None
@@ -166,12 +194,141 @@ class DatabaseApp:
             self.current_row = self.tree.item(selected_item)['values']
 
 
+
     def delete_row(self):
         if self.current_row:
             cursor = self.connection.cursor()
-            cursor.execute(f"DELETE FROM {self.current_table} WHERE id = {self.current_row[0]}") # Assuming the first column is the ID
-            self.connection.commit()
-            self.change_table(self.current_table)  # Refresh table
+            try:
+                # Check if the current table is a stock table
+                if self.current_table.startswith("obsolete") or self.current_table.startswith("stock"):
+                    confirmation = messagebox.askquestion("Delete", "Are you sure you want to delete this data?")
+                    if confirmation == 'yes':
+                        # Execute DELETE statement without inserting into another table
+                        cursor.execute(f"DELETE FROM {self.current_table} WHERE id = {self.current_row[0]}")
+                        self.connection.commit()
+                        print("Row deleted successfully from stock table")
+                        self.change_table(self.current_table)
+                else:
+                    self.message_box("Error", "Cannot Delete Directly From The Inventory Table")
+                    #self.status_label.configure(text="Cannot Delete Directly From The Inventory Table")
+                    print("Cannot Delete Directly From The Inventory Table")
+            except Exception as e:
+                print(f"Error occurred: {e}")
+        else:
+            print("No row selected")
+            
+    def stock_row(self):
+        if self.current_row:
+            cursor = self.connection.cursor()
+            try:
+                if self.current_table == "stockComputers" or self.current_table == "obsoleteComputers" or self.current_table == "computers":
+                    stock_table = "stockComputers"
+                    obsolete_table = "obsoleteComputers"
+                    main_table = "computers"
+                elif self.current_table == "stockMonitors" or self.current_table == "obsoleteMonitors" or self.current_table == "monitors":
+                    stock_table = "stockMonitors"
+                    obsolete_table = "obsoleteMonitors"
+                    main_table = "monitors"
+                if self.current_table == "stockComputers":
+                    self.message_box("Error", "Cannot Stock From Stock Table")
+                    print("Row already in stock table")
+                else:
+                    cursor.execute(f"SHOW COLUMNS FROM {self.current_table}")
+                    column_names = [column[0] for column in cursor.fetchall()]
+
+                    insert_columns = ", ".join(column_names)
+                    insert_values = f"SELECT {', '.join(column_names)} FROM {self.current_table} WHERE id = {self.current_row[0]}"
+                    insert_query = f"INSERT INTO {stock_table} ({insert_columns}) {insert_values}"
+
+                    cursor.execute(insert_query)
+                    self.connection.commit()
+
+                    cursor.execute(f"DELETE FROM {self.current_table} WHERE id = {self.current_row[0]}")
+                    self.connection.commit()
+
+                    self.change_table(self.current_table)
+                    print("Row deleted successfully and inserted into stock table")
+            except Exception as e:
+                print(f"Error occurred: {e}")
+        else:
+            print("No row selected")
+
+    def obsolete_row(self):
+        if self.current_row:
+            cursor = self.connection.cursor()
+            try:
+                if self.current_table == "stockComputers" or self.current_table == "obsoleteComputers" or self.current_table == "computers":
+                    stock_table = "stockComputers"
+                    obsolete_table = "obsoleteComputers"
+                    main_table = "computers"
+                elif self.current_table == "stockMonitors" or self.current_table == "obsoleteMonitors" or self.current_table == "monitors":
+                    stock_table = "stockMonitors"
+                    obsolete_table = "obsoleteMonitors"
+                    main_table = "monitors"
+                if self.current_table == "obsoleteComputers":
+                    self.message_box("Error", "Row already in obsolete table")
+                    print("Row already in obsolete table")
+                else:
+                    cursor.execute(f"SHOW COLUMNS FROM {self.current_table}")
+                    column_names = [column[0] for column in cursor.fetchall()]
+
+                    insert_columns = ", ".join(column_names)
+                    insert_values = f"SELECT {', '.join(column_names)} FROM {self.current_table} WHERE id = {self.current_row[0]}"
+                    insert_query = f"INSERT INTO {obsolete_table} ({insert_columns}) {insert_values}"
+
+                    cursor.execute(insert_query)
+                    self.connection.commit()
+
+                    cursor.execute(f"DELETE FROM {self.current_table} WHERE id = {self.current_row[0]}")
+                    self.connection.commit()
+
+                    self.change_table(self.current_table)
+                    print("Row deleted successfully and inserted into obsolete table")
+            except Exception as e:
+                print(f"Error occurred: {e}")
+        else:
+            print("No row selected")
+            
+            
+    def main_row(self):
+        if self.current_row:
+            cursor = self.connection.cursor()
+            try:
+                if self.current_table == "stockComputers" or self.current_table == "obsoleteComputers" or self.current_table == "computers":
+                    main_table = "computers"
+                elif self.current_table == "stockMonitors" or self.current_table == "obsoleteMonitors" or self.current_table == "monitors":
+                    main_table = "monitors"
+                if self.current_table == "computers" or self.current_table == "monitors":
+                    self.message_box("Error", "Row already in main table", icon='error')
+                    print("Data already in main table")
+                else:
+                    confirmation = messagebox.askokcancel("Assign", "Remember to update before assing to the main table", icon='info')
+                    if confirmation == True:
+                        cursor.execute(f"SHOW COLUMNS FROM {self.current_table}")
+                        column_names = [column[0] for column in cursor.fetchall()]
+
+                        insert_columns = ", ".join(column_names)
+                        insert_values = f"SELECT {', '.join(column_names)} FROM {self.current_table} WHERE id = {self.current_row[0]}"
+                        insert_query = f"INSERT INTO {main_table} ({insert_columns}) {insert_values}"
+
+                        cursor.execute(insert_query)
+                        self.connection.commit()
+
+                        cursor.execute(f"DELETE FROM {self.current_table} WHERE id = {self.current_row[0]}")
+                        self.connection.commit()
+
+                        self.change_table(self.current_table)
+                        print("Row deleted successfully and inserted into obsolete table")
+            except Exception as e:
+                print(f"Error occurred: {e}")
+                self.message_box("Error", "Error occurred: {e}", icon='error')
+        else:
+            print("No row selected")
+            self.message_box("Error", "No row selected", icon='error')
+
+
+
+
 
     def update_row(self, new_values):
         if self.current_row:
@@ -244,22 +401,33 @@ class DatabaseApp:
         self.context_menu.post(event.x_root, event.y_root)
 
     def update_row_dialog(self):
+        # Check if a row has been selected
+        if not self.current_row:
+            messagebox.showinfo("No row selected", "Please select a row to update")
+            return
+
         # Create a new Toplevel window
         update_dialog = Toplevel(self.root)
         update_dialog.title("Update row")
 
-        # Create an Entry for each field in the row, except 'id'
-        entries = [self.current_row[0]]  # start with 'id' value
-        for i, value in enumerate(self.current_row[1:], start=1):  # starting from 1
-            Label(update_dialog, text=f"Field {i}").grid(row=i-1, column=0)
-            entry = Entry(update_dialog)
-            entry.grid(row=i-1, column=1)
-            entry.insert(0, value)
-            entries.append(entry)
+        # Create an Entry for each field in the row
+        entries = []
+        cursor = self.connection.cursor()
+        cursor.execute(f"SHOW COLUMNS FROM {self.current_table}")
+        column_names = [column[0] for column in cursor.fetchall()]
+
+        # Generate widgets for each row
+        self.generate_row_widgets(update_dialog, column_names, entries)
+
+        # Set the value of each widget to the current value of the row
+        for entry, value in zip(entries, self.current_row[1:]):  # starting from index 1 to skip 'id' column
+            if isinstance(entry, StringVar):
+                entry.set(value)
+            else:
+                entry.insert(0, value)
 
         # Add a button that updates the row when clicked
-        Button(update_dialog, text="Update", command=lambda: self.update_row([e.get() if isinstance(e, Entry) else e for e in entries])).grid(row=len(self.current_row)-1, column=0, columnspan=2)
-
+        Button(update_dialog, text="Update", command=lambda: self.update_row([self.current_row[0]] + [e.get() if isinstance(e, Entry) else e.get() for e in entries])).grid(row=len(column_names), column=0, columnspan=2, pady=10)
 
     def generate_row_widgets(self, add_dialog, column_names, entries):
         def create_option_menu(add_dialog, options, i):
@@ -270,12 +438,26 @@ class DatabaseApp:
             return option_var
 
         option_dict = {
-            'OPS': ["OPS1", "OPS2", "OPS3"],
-            'WFH': ["OPS1", "OPS2", "OPS3"],
+            #Computers and Monitors dictionary entries
+            'OPS': ["ABB", "AKZO", "AMAZON"],
+            'WFH': ["ABB", "AKZO", "AMAZON"],
             'SITE': ["SITE1", "SITE2", "SITE3"],
-            'Type': ["Desktop", "Laptop"],
-            'Model': ["Model1", "Model2", "Model3", "Model4", "Model5"],
-            'PcModel': ["PcModel1", "PcModel2", "PcModel3", "PcModel4", "PcModel5"],
+            'TYPE': ["Desktop", "Laptop"],
+            'MODEL': ["Model1", "Model2", "Model3", "Model4", "Model5"],
+            'PCMODEL': ["PcModel1", "PcModel2", "PcModel3", "PcModel4", "PcModel5"],
+            'DISPLAY_MANUFACTURER': ["DisplayManufacturer1", "DisplayManufacturer2", "DisplayManufacturer3", "DisplayManufacturer4", "DisplayManufacturer5"],
+            ######
+            #Ricoh dictionary entries
+            'RICOHMODEL': ["RicohModel1", "RicohModel2", "RicohModel3", "RicohModel4", "RicohModel5"],
+            'DETAILEDMODEL': ["DetailedModel1", "DetailedModel2", "DetailedModel3", "DetailedModel4", "DetailedModel5"],
+            'IB_CITY': ["IBCity1", "IBCity2", "IBCity3", "IBCity4", "IBCity5"],
+            'LOCODE': ["LOCode1", "LOCode2", "LOCode3", "LOCode4", "LOCode5"],
+            'OPERATION': ["Operation1", "Operation2", "Operation3", "Operation4", "Operation5"],
+            ######
+            #Zebra dictionary entries
+            'OPERATIVA_ACTUAL': ["OperativaActual1", "OperativaActual2", "OperativaActual3", "OperativaActual4", "OperativaActual5"],
+            'POBLACION': ["Poblacion1", "Poblacion2", "Poblacion3", "Poblacion4", "Poblacion5"],
+            'DESCRIPCIÓN': ["Descripcion1", "Descripcion2", "Descripcion3", "Descripcion4", "Descripcion5"],
         }
 
         for i, column_name in enumerate(column_names[1:], start=1):  # starting from 1 to skip 'id' column
@@ -339,6 +521,18 @@ class DatabaseApp:
         
     def refresh_table(self):
         self.change_table(self.current_table)
+    
+    def message_box(self, title, message):
+        # Show the message box
+        messagebox.showinfo(title, message, parent=self.root)
+        
+    def confirm_box(self, title, message):
+        # Show the confirmation box
+        return messagebox.askyesno(title, message, parent=self.root)
+    
+    def error_box(self, title, message):
+        # Show the error box
+        messagebox.showerror(title, message, parent=self.root)
 
 
 
