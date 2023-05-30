@@ -1,7 +1,9 @@
 from tkinter import simpledialog
 import tkinter
 from tkinter import messagebox
+from tkinter import filedialog
 import mysql.connector
+import csv
 from mysql.connector import Error
 #todo:
 #Reminder: There is a lot of redundant code in the row functions, must be optimized
@@ -24,20 +26,20 @@ from mysql.connector import Error
                 # SITE
         # The update part must be tested more in depth
         
-# Add some kind of relation between BU and the computer/user/operation(Still need the data)
+# --->PENDING Add some kind of relation between BU and the computer/user/operation(Still need the data)
     #Maybe we can use mackup data to test the viability of the Function in the actual DB design
     
-#--->DONE(must change the prefix) Add Stock tables (may be for each kind of device?)
+# --->DONE(must change the prefix) Add Stock tables (may be for each kind of device?)
         #New design will have only a Computer table and various stock tables for each kind of device
         #So a ComputersInventory and a ComputersStock and for example a DisplaysInventory and a DisplaysStock
         #Instead of the actual approach of having a table for each site
         #More Details in top comment
     
-#--->DONE Function to add deleted data to the Stock table
+# --->DONE Function to add deleted data to the Stock table
 
 # Function to add new OC to the Stock table as pending
 
-# Function to export data from a given table to a .csv file
+# -->DONE Function to export data from a given table to a .csv file
     # Also will be interesting to export data from an specific filter query result
 
 
@@ -62,7 +64,7 @@ class DatabaseApp:
             #Light Blue: #0066cc - This is a light blue shade, which could be used for active elements or notifications.
 
             #Very Light Blue: #0073e6 - This is a very light shade of blue, almost sky blue. It could be used for highlighting important information or buttons.
-        
+        self.last_filter = None
         self.root.title("Ceva Inventary App")
         self.root.geometry("1920x1080")
         self.column_configurations = {}
@@ -83,12 +85,12 @@ class DatabaseApp:
         self.table_menu = Menu(self.menu_bar, bg='#003366', fg='white')  # Set table menu colors
         self.menu_bar.add_cascade(label='Tables', menu=self.table_menu)
         
-        self.table_menu.add_command(label='barajasComputers', command=lambda: self.change_table('computers'))
-        self.table_menu.add_command(label='barajasStock', command=lambda: self.change_table('stockComputers'))
-        self.table_menu.add_command(label='barajasObsolete', command=lambda: self.change_table('obsoleteComputers'))
-        self.table_menu.add_command(label='barajasDisplays', command=lambda: self.change_table('beta_inventory_barajas'))
+        self.table_menu.add_command(label='Computers', command=lambda: self.change_table('computers'))
+        self.table_menu.add_command(label='StockComputers', command=lambda: self.change_table('stockComputers'))
+        self.table_menu.add_command(label='ObsoleteComputers', command=lambda: self.change_table('obsoleteComputers'))
+        self.table_menu.add_command(label='Monitors', command=lambda: self.change_table('beta_inventory_barajas'))
         self.table_menu.add_command(label='ricoh', command=lambda: self.change_table('ricoh'))
-        self.table_menu.add_command(label='zebraont', command=lambda: self.change_table('zebraont'))
+        self.table_menu.add_command(label='zebra', command=lambda: self.change_table('zebraont'))
 
                 # Add button
         self.actions_menu = Menu(self.menu_bar, bg='#003366', fg='white')  # Set actions menu colors
@@ -97,7 +99,9 @@ class DatabaseApp:
         # Add new row
         self.actions_menu.add_command(label='Add New', command=self.add_new_row)
         self.actions_menu.add_command(label='Filter', command=self.filter_dialog)
+        self.actions_menu.add_command(label='Export', command=self.export_to_csv)
         self.actions_menu.add_command(label='Refresh', command=self.refresh_table)
+        
 
         # Add status label
         #self.status_label = tkinter.Label(root, text="")
@@ -179,7 +183,7 @@ class DatabaseApp:
             self.tree.insert('', 'end', values=row)
             
         # Hide the first column 
-        self.tree.column('id', width=0, stretch=NO)
+        #self.tree.column('id', width=0, stretch=NO)
         
         # Set the height of the treeview based on the number of rows
         self.tree.configure(height=len(rows))
@@ -209,7 +213,7 @@ class DatabaseApp:
                         print("Row deleted successfully from stock table")
                         self.change_table(self.current_table)
                 else:
-                    self.message_box("Error", "Cannot Delete Directly From The Inventory Table")
+                    self.error_box("Delete Error", "Cannot Delete Directly From The Inventory Table")
                     #self.status_label.configure(text="Cannot Delete Directly From The Inventory Table")
                     print("Cannot Delete Directly From The Inventory Table")
             except Exception as e:
@@ -299,7 +303,7 @@ class DatabaseApp:
                 elif self.current_table == "stockMonitors" or self.current_table == "obsoleteMonitors" or self.current_table == "monitors":
                     main_table = "monitors"
                 if self.current_table == "computers" or self.current_table == "monitors":
-                    self.message_box("Error", "Row already in main table", icon='error')
+                    self.message_box("Cannot Assign", "Data already in computers table")
                     print("Data already in main table")
                 else:
                     confirmation = messagebox.askokcancel("Assign", "Remember to update before assing to the main table", icon='info')
@@ -321,7 +325,7 @@ class DatabaseApp:
                         print("Row deleted successfully and inserted into obsolete table")
             except Exception as e:
                 print(f"Error occurred: {e}")
-                self.message_box("Error", "Error occurred: {e}", icon='error')
+                self.message_box("Error", "Error occurred: {e}")
         else:
             print("No row selected")
             self.message_box("Error", "No row selected", icon='error')
@@ -391,7 +395,7 @@ class DatabaseApp:
 
         # Adjust the height of the treeview
         self.tree.configure(height=min(len(rows), 700))  # adjust the maximum height to your preference
-
+        self.last_filter = (column_name, value)
 
 
 
@@ -477,16 +481,17 @@ class DatabaseApp:
 
         # Create an Entry for each field in the row
         entries = []
+        if self.current_table == "computers" or self.current_table == "monitors" or self.current_table == "ricoh" or self.current_table == "zebra":
+            cursor = self.connection.cursor()
+            cursor.execute(f"SHOW COLUMNS FROM {self.current_table}")
+            column_names = [column[0] for column in cursor.fetchall()]
 
-        cursor = self.connection.cursor()
-        cursor.execute(f"SHOW COLUMNS FROM {self.current_table}")
-        column_names = [column[0] for column in cursor.fetchall()]
-
-        # Generate widgets for each row
-        self.generate_row_widgets(add_dialog, column_names, entries)
-        # Add a button that adds the row when clicked
-        Button(add_dialog, text="Add", command=lambda: self.insert_row([e.get() for e in entries])).grid(row=len(column_names), column=0, columnspan=2)
-        
+            # Generate widgets for each row
+            self.generate_row_widgets(add_dialog, column_names, entries)
+            # Add a button that adds the row when clicked
+            Button(add_dialog, text="Add", command=lambda: self.insert_row([e.get() for e in entries])).grid(row=len(column_names), column=0, columnspan=2)
+        else:
+            self.error_box("Error", "Cannot assign to: " + self.current_table + " in only possible to assign to one of the main tables")
     def insert_row(self, new_values):
         cursor = self.connection.cursor()
         
@@ -518,6 +523,44 @@ class DatabaseApp:
         Button(filter_dialog, text="Apply filter",
             command=lambda: self.filter_table(column_name_entry.get(), filter_value_entry.get())
             ).grid(row=2, column=0, columnspan=2)
+
+
+    def export_to_csv(self):
+        cursor = self.connection.cursor()
+
+        # Define the query to get all the data
+        query = f"SELECT * FROM {self.current_table}"
+        if self.last_filter:
+            query += f" WHERE {self.last_filter[0]} LIKE '%{self.last_filter[1]}%'"
+
+        # Execute the query
+        cursor.execute(query)
+
+        # Fetch all the data
+        data = cursor.fetchall()
+
+        # Define column names
+        cursor.execute(f"SHOW COLUMNS FROM {self.current_table}")
+        column_names = [column[0] for column in cursor.fetchall()]
+
+        # Open a file dialog to choose where to save the CSV file
+        csv_file_name = filedialog.asksaveasfilename(defaultextension='.csv', filetypes=[('CSV Files', '*.csv')])
+
+        # Check if a file name was chosen
+        if not csv_file_name:
+            print("No file name chosen for CSV export.")
+            return
+
+        # Write data to the chosen CSV file
+        try:
+            with open(csv_file_name, 'w', newline='') as csvfile:
+                writer = csv.writer(csvfile)
+                writer.writerow(column_names)  # header
+                writer.writerows(data)
+            print(f"Data exported successfully to {csv_file_name}")
+        except Exception as e:
+            print(f"Error occurred: {e}")
+
         
     def refresh_table(self):
         self.change_table(self.current_table)
