@@ -17,10 +17,15 @@ def check_version():
     path = os.system(r"net use Z: \\esoga01vwtfs01\Tools")
 
     print(path)
-    with open("Z:\\Ceva-Inventory-App\\version.txt", "r") as file2:
-        version2 = file2.read().strip()
-        
-    return "1" == version2
+    try:
+        with open("Z:\\Ceva-Inventory-App\\version.txt", "r") as file2:
+            version2 = file2.read().strip()
+            
+        return "1" == version2
+    except:
+        messagebox.showerror("Error", "Version file not found.")
+        print("Version file not found.")
+        return False
 
 def start_program(root):
     # Map the network drive

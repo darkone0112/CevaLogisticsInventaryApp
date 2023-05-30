@@ -123,7 +123,7 @@ class DatabaseApp:
         
         
         #Display default table
-        self.change_table('beta_inventory_barajas')
+        self.change_table('computers')
         
         # Hide the first column
         self.tree.column('#0', width=0, stretch=NO)
@@ -183,7 +183,7 @@ class DatabaseApp:
             self.tree.insert('', 'end', values=row)
             
         # Hide the first column 
-        #self.tree.column('id', width=0, stretch=NO)
+        self.tree.column('id', width=0, stretch=NO)
         
         # Set the height of the treeview based on the number of rows
         self.tree.configure(height=len(rows))
