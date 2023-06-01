@@ -1,5 +1,5 @@
 from tkinter import simpledialog
-import tkinter
+import tkinter as tk
 from tkinter import messagebox
 from tkinter import filedialog
 import mysql.connector
@@ -47,6 +47,7 @@ from tkinter import *
 from tkinter import messagebox, ttk
 
 class DatabaseApp:
+    columns_with_manual_filtering = ["Name_Device", "S_N", "User", "User_AD", "PO_Number", "id"]
     def __init__(self, root):
         self.root = root
         self.root.state('zoomed')
@@ -127,7 +128,6 @@ class DatabaseApp:
         
         # Hide the first column
         self.tree.column('#0', width=0, stretch=NO)
-        
         
         #Bind right click event
         self.tree.bind("<Button-3>", self.show_context_menu)
@@ -504,26 +504,69 @@ class DatabaseApp:
         self.connection.commit()
         self.change_table(self.current_table)  # Refresh table
         
-        
     def filter_dialog(self):
         # Create a new Toplevel window
         filter_dialog = Toplevel(self.root)
         filter_dialog.title("Filter")
 
-        # Create labels and entries for the column name and filter value
-        Label(filter_dialog, text="Column name").grid(row=0, column=0)
-        column_name_entry = Entry(filter_dialog)
-        column_name_entry.grid(row=0, column=1)
+        # List to hold all filters
+        filters = []
 
-        Label(filter_dialog, text="Filter value").grid(row=1, column=0)
-        filter_value_entry = Entry(filter_dialog)
-        filter_value_entry.grid(row=1, column=1)
+        def add_filter():
+            # Fetch column names from the database
+            cursor = self.connection.cursor()
+            cursor.execute(f"SHOW COLUMNS FROM {self.current_table}")
+            column_names = [column[0] for column in cursor.fetchall()]
 
-        # Add a button that applies the filter when clicked
-        Button(filter_dialog, text="Apply filter",
-            command=lambda: self.filter_table(column_name_entry.get(), filter_value_entry.get())
-            ).grid(row=2, column=0, columnspan=2)
 
+            # Create StringVar objects to hold the selected column and filter value
+            column_name_var = StringVar(filter_dialog)
+            column_name_var.set(column_names[0])
+            filter_value_var = StringVar(filter_dialog)
+
+            # Create a frame to hold the filter value widget
+            filter_value_frame = Frame(filter_dialog)
+
+            # Function to update the filter value widget
+            def update_value_widget(*args):
+                # Clear the frame
+                for widget in filter_value_frame.winfo_children():
+                    widget.destroy()
+
+                # If the column is in columns_with_manual_filtering, create an Entry
+                if column_name_var.get() in self.columns_with_manual_filtering:
+                    filter_value_entry = Entry(filter_value_frame, textvariable=filter_value_var)
+                    filter_value_entry.pack()
+                else:  # Otherwise, create an OptionMenu
+                    cursor.execute(f"SELECT DISTINCT {column_name_var.get()} FROM {self.current_table}")
+                    unique_values = [row[0] for row in cursor.fetchall()]
+                    filter_value_menu = OptionMenu(filter_value_frame, filter_value_var, *unique_values)
+                    filter_value_menu.pack()
+
+            # Update the filter value widget whenever the column selection changes
+            column_name_var.trace('w', update_value_widget)
+
+            # Store the filter in the list of filters
+            filters.append([column_name_var, filter_value_var])
+
+            # Display the filter
+            OptionMenu(filter_dialog, column_name_var, *column_names).grid(row=len(filters), column=0)
+            filter_value_frame.grid(row=len(filters), column=1)
+
+            # Initial update of the filter value widget
+            update_value_widget()
+
+        def apply_filters():
+            for filter in filters:
+                column_name = filter[0].get()
+                filter_value = filter[1].get()
+                self.filter_table(column_name, filter_value)
+
+        # Add filter button
+        Button(filter_dialog, text="Add filter", command=add_filter).grid(row=100, column=0, columnspan=2)
+
+        # Apply filters button
+        Button(filter_dialog, text="Apply filters", command=apply_filters).grid(row=101, column=0, columnspan=2)
 
     def export_to_csv(self):
         cursor = self.connection.cursor()
