@@ -4,6 +4,8 @@ from tkinter import messagebox
 from tkinter import filedialog
 import mysql.connector
 import csv
+import json
+import os
 from mysql.connector import Error
 #todo:
 #Reminder: There is a lot of redundant code in the row functions, must be optimized
@@ -83,9 +85,9 @@ class DatabaseApp:
         # Create UI elements
         self.menu_bar = Menu(self.root, bg='grey', fg='white')  # Set menu colors
         self.root.config(menu=self.menu_bar)
+        
         self.table_menu = Menu(self.menu_bar, bg='#003366', fg='white')  # Set table menu colors
         self.menu_bar.add_cascade(label='Tables', menu=self.table_menu)
-        
         self.table_menu.add_command(label='Computers', command=lambda: self.change_table('computers'))
         self.table_menu.add_command(label='StockComputers', command=lambda: self.change_table('stockComputers'))
         self.table_menu.add_command(label='ObsoleteComputers', command=lambda: self.change_table('obsoleteComputers'))
@@ -96,12 +98,15 @@ class DatabaseApp:
                 # Add button
         self.actions_menu = Menu(self.menu_bar, bg='#003366', fg='white')  # Set actions menu colors
         self.menu_bar.add_cascade(label='Actions', menu=self.actions_menu)
-        
         # Add new row
         self.actions_menu.add_command(label='Add New', command=self.add_new_row)
         self.actions_menu.add_command(label='Filter', command=self.filter_dialog)
         self.actions_menu.add_command(label='Export', command=self.export_to_csv)
         self.actions_menu.add_command(label='Refresh', command=self.refresh_table)
+        
+        self.databases_menu = Menu(self.menu_bar, bg='#003366', fg='white')  # Set actions menu colors
+        self.menu_bar.add_cascade(label='DataBases', menu=self.databases_menu)
+        self.databases_menu.add_command(label='Update List', command=self.add_data)
         
 
         # Add status label
@@ -441,86 +446,13 @@ class DatabaseApp:
             option_menu.grid(row=i, column=1)
             return option_var
 
-        option_dict = {
-            #Computers and Monitors dictionary entries
-            'OPS': ["ABB", "AKZO", "AMAZON"],
-            'WFH': ["ABB", "AKZO", "AMAZON"],
-            'SITE': ["SITE1", "SITE2", "SITE3"],
-            'TYPE': ["Desktop", "Laptop"],
-            'MODEL': ["Model1", "Model2", "Model3", "Model4", "Model5"],
-            'PCMODEL': [    "ZEBRA ET51/56",
-    "ZEBRA ET55",
-    "ACER Aspire A315-58",
-    "ACER Aspire A315-59",
-    "ACER Aspire A515-57",
-    "HP EliteBook 830 G7",
-    "HP EliteBook 845 G7",
-    "HP 250 G8",
-    "HP 340S G7",
-    "HP Desktop Pro 300 G3",
-    "HP Desktop Pro 300 G6 Microtower PC",
-    "HP Elite Dragonfly 13.5 inch G3  PC",
-    "HP Elite Mini 600 G9 Desktop PC",
-    "HP EliteBook 735 G5",
-    "HP EliteBook 735 G6",
-    "HP EliteBook 745 G6",
-    "HP EliteBook 820 G3",
-    "HP EliteBook 830 G7",
-    "HP EliteBook 830 G8",
-    "HP EliteBook 835 G7  PC",
-    "HP EliteBook 840 G5",
-    "HP EliteBook 840 G6",
-    "HP EliteBook 840 G7  PC",
-    "HP EliteBook 845 G7",
-    "HP EliteBook 845 G8  PC",
-    "HP EliteBook x360 1030 G3",
-    "HP EliteBook x360 1030 G7  PC",
-    "HP EliteBook x360 1040 G6",
-    "HP EliteDesk 705 G4 DM",
-    "Hp EliteDesk 705 G5",
-    "HP EliteDesk 705 G5 SFF",
-    "HP EliteDesk 805 G6 Desktop Mini PC",
-    "HP Pavilion x360 Convertible 14-dw1xxx",
-    "HP ProBook 440 G7",
-    "HP ProBook 440 G8  PC",
-    "HP ProBook 445R G6",
-    "HP ProBook 450 G4",
-    "HP ProBook 450 G5",
-    "HP ProBook 635 Aero G7  PC",
-    "HP ProBook 640 G2",
-    "HP ProBook 645 G4",
-    "HP ProDesk 600 G3 DM",
-    "HP ProDesk 600 G4 DM",
-    "HP ZBook 15u G5",
-    "HP ZBook 15u G6",
-    "HP ZBook Firefly 15 G7 Mobile Workstation",
-    "HP ZBook Firefly 15.6 inch G8 Mobile Workstation PC",
-    "LENOVO IdeaPad 3 15ALC6",
-    "DELL Latitude 3410",
-    "DELL Latitude 5410",
-    "Lenovo IdeaPad S540-15IWL",
-    "Lenovo S510",
-    "Lenovo V15 G2 ITL",
-    "MSI Modern 14 B11MOU",
-    "LOGITECH NUC8i7BEH",
-    "DELL Precision 3571",
-    "LENOVO ThinkPad E485",
-    "LENOVO ThinkPad L13",
-    "LENOVO ThinkPad T14 Gen 2i",],
-            'DISPLAY_MANUFACTURER': ["DisplayManufacturer1", "DisplayManufacturer2", "DisplayManufacturer3", "DisplayManufacturer4", "DisplayManufacturer5"],
-            ######
-            #Ricoh dictionary entries
-            'RICOHMODEL': ["RicohModel1", "RicohModel2", "RicohModel3", "RicohModel4", "RicohModel5"],
-            'DETAILEDMODEL': ["DetailedModel1", "DetailedModel2", "DetailedModel3", "DetailedModel4", "DetailedModel5"],
-            'IB_CITY': ["IBCity1", "IBCity2", "IBCity3", "IBCity4", "IBCity5"],
-            'LOCODE': ["LOCode1", "LOCode2", "LOCode3", "LOCode4", "LOCode5"],
-            'OPERATION': ["Operation1", "Operation2", "Operation3", "Operation4", "Operation5"],
-            ######
-            #Zebra dictionary entries
-            'OPERATIVA_ACTUAL': ["OperativaActual1", "OperativaActual2", "OperativaActual3", "OperativaActual4", "OperativaActual5"],
-            'POBLACION': ["Poblacion1", "Poblacion2", "Poblacion3", "Poblacion4", "Poblacion5"],
-            'DESCRIPCIÓN': ["Descripcion1", "Descripcion2", "Descripcion3", "Descripcion4", "Descripcion5"],
-        }
+        # Load the data from JSON
+        if os.path.exists('Json/dictionaries.json'):
+            with open('Json/dictionaries.json') as f:
+                option_dict = json.load(f)
+        else:
+            with open('../Json/dictionaries.json', 'w') as f:
+                json.dump({}, f)
 
         for i, column_name in enumerate(column_names[1:], start=1):  # starting from 1 to skip 'id' column
             Label(add_dialog, text=f"{column_name}").grid(row=i, column=0)
@@ -531,6 +463,7 @@ class DatabaseApp:
                 entry = Entry(add_dialog)
                 entry.grid(row=i, column=1)
                 entries.append(entry)
+
 
     def add_new_row(self):
         # Create a new Toplevel window
@@ -625,6 +558,65 @@ class DatabaseApp:
 
         # Apply filters button
         Button(filter_dialog, text="Apply filters", command=apply_filters).grid(row=101, column=0, columnspan=2)
+        
+    def add_data(self):
+        with open(os.path.join('Json', 'dictionaries.json'), 'r') as f:
+            option_dict = json.load(f)
+
+        def save_data():
+            key = key_var.get()
+            value = value_entry.get()
+
+            if not key or not value:
+                messagebox.showerror("Error", "Both fields must be filled out")
+                return
+
+            option_dict[key].append(value)
+
+            with open(os.path.join('Json', 'dictionaries.json'), 'w') as f:
+                json.dump(option_dict, f, indent=3)
+
+            messagebox.showinfo("Success", "Data added successfully")
+
+        def delete_data():
+            key = key_var.get()
+            value = value_entry.get()
+
+            if not key or not value:
+                messagebox.showerror("Error", "Both fields must be filled out")
+                return
+
+            if value in option_dict[key]:
+                option_dict[key].remove(value)
+
+                with open(os.path.join('Json', 'dictionaries.json'), 'w') as f:
+                    json.dump(option_dict, f, indent=4)
+
+                messagebox.showinfo("Success", "Data deleted successfully")
+            else:
+                messagebox.showerror("Error", "Value not found in key")
+
+        add_dialog = Toplevel()
+        add_dialog.title("Add/Delete Data")
+
+        Label(add_dialog, text="Key:").grid(row=0, column=0)
+
+        # Create a StringVar to hold the selected option
+        key_var = StringVar()
+        if option_dict:
+            # Set it to the first key of the dictionary by default
+            key_var.set(list(option_dict.keys())[0])
+
+        key_option_menu = OptionMenu(add_dialog, key_var, *option_dict.keys())
+        key_option_menu.grid(row=0, column=1)
+
+        Label(add_dialog, text="Value:").grid(row=1, column=0)
+        value_entry = Entry(add_dialog)
+        value_entry.grid(row=1, column=1)
+
+        Button(add_dialog, text="Save", command=save_data).grid(row=2, column=0)
+        Button(add_dialog, text="Delete", command=delete_data).grid(row=2, column=1)
+
 
     def export_to_csv(self):
         cursor = self.connection.cursor()
