@@ -23,8 +23,8 @@ def check_version():
             
         return "1" == version2
     except:
-        messagebox.showerror("Error", "Version file not found.")
-        print("Version file not found.")
+        messagebox.showerror("Error", "Version file not found || Network Error.")
+        print("Version file not found || Network Error.")
         return False
 
 def start_program(root):
