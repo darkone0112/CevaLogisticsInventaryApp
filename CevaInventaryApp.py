@@ -483,6 +483,9 @@ class DatabaseApp:
             Button(add_dialog, text="Add", command=lambda: self.insert_row([e.get() for e in entries])).grid(row=len(column_names), column=0, columnspan=2)
         else:
             self.error_box("Error", "Cannot assign to: " + self.current_table + " in only possible to assign to one of the main tables")
+    #Here will be the code for add new Computer as stock to the Computers Stock Table
+    #Using the OC and the rest of the values as pending
+    #def insert_oc(self, new_values):
     def insert_row(self, new_values):
         cursor = self.connection.cursor()
         
