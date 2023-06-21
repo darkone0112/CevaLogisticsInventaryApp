@@ -9,6 +9,7 @@ import os
 from mysql.connector import Error
 #todo:
 #Reminder: There is a lot of redundant code in the row functions, must be optimized
+            
 #The list of operation are working great, but need to constraint the abailavility of the operations to the site, for example Barajas site has no Amazone operation
 # --->DONE Add new function to move data from the inventory table and stock table to the obsolete table
 # --->DONE Must remade the DDBB structure with the new design
@@ -100,6 +101,7 @@ class DatabaseApp:
         self.menu_bar.add_cascade(label='Actions', menu=self.actions_menu)
         # Add new row
         self.actions_menu.add_command(label='Add New', command=self.add_new_row)
+        self.actions_menu.add_command(label='Add New PO', command=self.insert_to_stock_computers)
         self.actions_menu.add_command(label='Filter', command=self.filter_dialog)
         self.actions_menu.add_command(label='Export', command=self.export_to_csv)
         self.actions_menu.add_command(label='Refresh', command=self.refresh_table)
@@ -438,6 +440,7 @@ class DatabaseApp:
         # Add a button that updates the row when clicked
         Button(update_dialog, text="Update", command=lambda: self.update_row([self.current_row[0]] + [e.get() if isinstance(e, Entry) else e.get() for e in entries])).grid(row=len(column_names), column=0, columnspan=2, pady=10)
 
+    
     def generate_row_widgets(self, add_dialog, column_names, entries):
         def create_option_menu(add_dialog, options, i):
             option_var = StringVar()
@@ -483,9 +486,75 @@ class DatabaseApp:
             Button(add_dialog, text="Add", command=lambda: self.insert_row([e.get() for e in entries])).grid(row=len(column_names), column=0, columnspan=2)
         else:
             self.error_box("Error", "Cannot assign to: " + self.current_table + " in only possible to assign to one of the main tables")
+    def get_next_id(self):
+        cursor = self.connection.cursor()
+
+        tables = ["computers", "stockcomputers", "obsoletecomputers"]
+        max_id = 0
+
+        for table in tables:
+            cursor.execute(f"SELECT MAX(id) FROM {table}")
+            result = cursor.fetchone()[0]
+            if result is not None and result > max_id:
+                max_id = result
+
+        return max_id + 1
+
+    
     #Here will be the code for add new Computer as stock to the Computers Stock Table
     #Using the OC and the rest of the values as pending
     #def insert_oc(self, new_values):
+    def insert_to_stock_computers(self):
+        # Create a new Toplevel window
+        add_dialog = Toplevel(self.root)
+        add_dialog.title("Add new row to stock computers")
+
+        # Create an Entry for each field in the row
+        entries = []
+        cursor = self.connection.cursor()
+        cursor.execute(f"SHOW COLUMNS FROM stockcomputers")
+        column_names = [column[0] for column in cursor.fetchall()]
+
+        # Generate widgets for each row
+        self.generate_row_widgets(add_dialog, column_names, entries)
+        
+        # Add a button that adds the row when clicked
+        Button(add_dialog, text="Add", command=lambda: self.add_and_close_dialog(add_dialog, [e.get() for e in entries])).grid(row=len(column_names), column=0, columnspan=2)
+    
+    def insert_row_stock_computers(self, values):
+        try:
+            cursor = self.connection.cursor()
+
+            # Get the number of columns in the table
+            cursor.execute(f"SHOW COLUMNS FROM stockcomputers")
+            column_names = [column[0] for column in cursor.fetchall()]
+
+            next_id = self.get_next_id()  # Get the next valid id
+
+            values = [next_id] + values  # Prepend the id to the list of values
+
+            # Check if the number of columns matches the number of values provided
+            if len(column_names) != len(values):
+                messagebox.showerror("Error", "The number of values provided does not match the number of columns in the table")
+                return False
+
+            placeholders = ", ".join(["%s"] * len(values))
+            query = f"INSERT INTO stockcomputers ({', '.join(column_names)}) VALUES ({placeholders})"
+
+            cursor.execute(query, values)
+            self.connection.commit()
+
+            messagebox.showinfo("Success", "Row inserted successfully")
+            return True  # Return True on success
+            
+        except Exception as e:
+            messagebox.showerror("Error", f"An error occurred: {str(e)}")
+            return False  # Return False on failure
+        
+    def add_and_close_dialog(self, add_dialog, values):
+        if self.insert_row_stock_computers(values):
+            add_dialog.destroy()  # Close the add_dialog window if data insertion is successful
+                
     def insert_row(self, new_values):
         cursor = self.connection.cursor()
         
