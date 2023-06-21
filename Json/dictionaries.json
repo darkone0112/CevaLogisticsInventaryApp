@@ -1,0 +1,152 @@
+{
+    "OPS": [
+        "ABB",
+        "AKZO",
+        "AMAZON"
+    ],
+    "WFH": [
+        "ABB",
+        "AKZO",
+        "AMAZON"
+    ],
+    "SITE": [
+        "SITE1",
+        "SITE2",
+        "SITE3"
+    ],
+    "TYPE": [
+        "Desktop",
+        "Laptop"
+    ],
+    "MODEL": [
+        "Model1",
+        "Model2",
+        "Model3",
+        "Model4",
+        "Model5"
+    ],
+    "PCMODEL": [
+        "ZEBRA ET51/56",
+        "ZEBRA ET55",
+        "ACER Aspire A315-58",
+        "ACER Aspire A315-59",
+        "ACER Aspire A515-57",
+        "HP EliteBook 830 G7",
+        "HP EliteBook 845 G7",
+        "HP 250 G8",
+        "HP 340S G7",
+        "HP Desktop Pro 300 G3",
+        "HP Desktop Pro 300 G6 Microtower PC",
+        "HP Elite Dragonfly 13.5 inch G3  PC",
+        "HP Elite Mini 600 G9 Desktop PC",
+        "HP EliteBook 735 G5",
+        "HP EliteBook 735 G6",
+        "HP EliteBook 745 G6",
+        "HP EliteBook 820 G3",
+        "HP EliteBook 830 G7",
+        "HP EliteBook 830 G8",
+        "HP EliteBook 835 G7  PC",
+        "HP EliteBook 840 G5",
+        "HP EliteBook 840 G6",
+        "HP EliteBook 840 G7  PC",
+        "HP EliteBook 845 G7",
+        "HP EliteBook 845 G8  PC",
+        "HP EliteBook x360 1030 G3",
+        "HP EliteBook x360 1030 G7  PC",
+        "HP EliteBook x360 1040 G6",
+        "HP EliteDesk 705 G4 DM",
+        "Hp EliteDesk 705 G5",
+        "HP EliteDesk 705 G5 SFF",
+        "HP EliteDesk 805 G6 Desktop Mini PC",
+        "HP Pavilion x360 Convertible 14-dw1xxx",
+        "HP ProBook 440 G7",
+        "HP ProBook 440 G8  PC",
+        "HP ProBook 445R G6",
+        "HP ProBook 450 G4",
+        "HP ProBook 450 G5",
+        "HP ProBook 635 Aero G7  PC",
+        "HP ProBook 640 G2",
+        "HP ProBook 645 G4",
+        "HP ProDesk 600 G3 DM",
+        "HP ProDesk 600 G4 DM",
+        "HP ZBook 15u G5",
+        "HP ZBook 15u G6",
+        "HP ZBook Firefly 15 G7 Mobile Workstation",
+        "HP ZBook Firefly 15.6 inch G8 Mobile Workstation PC",
+        "LENOVO IdeaPad 3 15ALC6",
+        "DELL Latitude 3410",
+        "DELL Latitude 5410",
+        "Lenovo IdeaPad S540-15IWL",
+        "Lenovo S510",
+        "Lenovo V15 G2 ITL",
+        "MSI Modern 14 B11MOU",
+        "LOGITECH NUC8i7BEH",
+        "DELL Precision 3571",
+        "LENOVO ThinkPad E485",
+        "LENOVO ThinkPad L13",
+        "LENOVO ThinkPad T14 Gen 2i"
+    ],
+    "DISPLAY_MANUFACTURER": [
+        "DisplayManufacturer1",
+        "DisplayManufacturer2",
+        "DisplayManufacturer3",
+        "DisplayManufacturer4",
+        "DisplayManufacturer5"
+    ],
+    "RICOHMODEL": [
+        "RicohModel1",
+        "RicohModel2",
+        "RicohModel3",
+        "RicohModel4",
+        "RicohModel5"
+    ],
+    "DETAILEDMODEL": [
+        "DetailedModel1",
+        "DetailedModel2",
+        "DetailedModel3",
+        "DetailedModel4",
+        "DetailedModel5"
+    ],
+    "IB_CITY": [
+        "IBCity1",
+        "IBCity2",
+        "IBCity3",
+        "IBCity4",
+        "IBCity5"
+    ],
+    "LOCODE": [
+        "LOCode1",
+        "LOCode2",
+        "LOCode3",
+        "LOCode4",
+        "LOCode5"
+    ],
+    "OPERATION": [
+        "Operation1",
+        "Operation2",
+        "Operation3",
+        "Operation4",
+        "Operation5"
+    ],
+    "OPERATIVA_ACTUAL": [
+        "OperativaActual1",
+        "OperativaActual2",
+        "OperativaActual3",
+        "OperativaActual4",
+        "OperativaActual5"
+    ],
+    "POBLACION": [
+        "Poblacion1",
+        "Poblacion2",
+        "Poblacion3",
+        "Poblacion4",
+        "Poblacion5"
+    ],
+    "DESCRIPCI\u00c3\u201cN": [
+        "Descripcion1",
+        "Descripcion2",
+        "Descripcion3",
+        "Descripcion4",
+        "Descripcion5"
+    ]
+}
