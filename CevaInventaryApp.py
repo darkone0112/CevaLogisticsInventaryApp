@@ -172,13 +172,13 @@ class DatabaseApp:
         if table_name in self.column_configurations:
             # If a configuration exists for this table, apply it
             for col, width in self.column_configurations[table_name].items():
-                self.tree.column(col, width=220, anchor="center")
+                self.tree.column(col, width=190, anchor="center")
         else:
             # Otherwise, create a new configuration
             self.column_configurations[table_name] = {}
             for col in column_names:
-                self.tree.column(col, width=220, anchor="center")  # adjust the width to suit your needs
-                self.column_configurations[table_name][col] = 220  # Store the width
+                self.tree.column(col, width=190, anchor="center")  # adjust the width to suit your needs
+                self.column_configurations[table_name][col] = 190  # Store the width
 
         # Set column titles for each column
         for col in column_names:
