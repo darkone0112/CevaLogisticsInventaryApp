@@ -442,12 +442,64 @@ class DatabaseApp:
 
     
     def generate_row_widgets(self, add_dialog, column_names, entries):
-        def create_option_menu(add_dialog, options, i):
+        def create_option_menu(add_dialog, options, row, column):
             option_var = StringVar()
             option_var.set(options[0])
             option_menu = OptionMenu(add_dialog, option_var, *options)
-            option_menu.grid(row=i, column=1)
+            option_menu.grid(row=row, column=column)
             return option_var
+
+        def create_radio_button_dialog(add_dialog, options, row, column):
+            # Variable to hold the selected option
+            option_var = StringVar()
+
+            # Create a button that will open the radio button dialog
+            button = tk.Button(add_dialog, text="Select Option", command=lambda: open_radio_dialog(options, option_var, button))
+            button.grid(row=row, column=column)
+
+            return option_var
+
+        def create_inline_radio_buttons(add_dialog, options, row, column):
+            option_var = StringVar()
+            for i, option in enumerate(options):
+                rb = tk.Radiobutton(add_dialog, text=option, variable=option_var, value=option)
+                rb.grid(row=row, column=column+i)
+            return option_var
+
+        def open_radio_dialog(options, option_var, button):
+            # Create a new top-level window
+            dialog = tk.Toplevel()
+            dialog.geometry('1424x400')  # Adjust this size according to your need
+
+            # Create a search entry
+            search_var = StringVar()
+            search_entry = Entry(dialog, textvariable=search_var)
+            search_entry.grid(row=0, column=0, columnspan=10)
+            search_entry.focus_set()  # set focus on the entry box
+
+            # Function to update the options based on the search text
+            def update_options(*args):
+                # Get the current search text
+                search_text = search_var.get()
+                # Create a radio button for each option
+                for widget in dialog.winfo_children():
+                    if isinstance(widget, tk.Radiobutton):
+                        widget.destroy()
+
+                for i, option in enumerate([o for o in options if search_text.lower() in o.lower()]):
+                    # Use modulo operation to distribute radio buttons into different columns
+                    column = i // 10
+                    row = (i % 10) + 1  # Start from row 1 to avoid search entry
+                    rb = tk.Radiobutton(dialog, text=option, variable=option_var, value=option,
+                                        command=lambda option=option: select_option_and_destroy(option, dialog, button))
+                    rb.grid(row=row, column=column, sticky='w')
+
+            search_var.trace('w', update_options)
+            update_options()  # Call once to populate the options
+
+        def select_option_and_destroy(option, dialog, button):
+            button.config(text=option)
+            dialog.destroy()
 
         # Load the data from JSON
         if os.path.exists('Json/dictionaries.json'):
@@ -460,7 +512,12 @@ class DatabaseApp:
         for i, column_name in enumerate(column_names[1:], start=1):  # starting from 1 to skip 'id' column
             Label(add_dialog, text=f"{column_name}").grid(row=i, column=0)
             if column_name.upper() in option_dict:
-                option_var = create_option_menu(add_dialog, option_dict[column_name.upper()], i)
+                if column_name.upper() == "PCMODEL":
+                    option_var = create_radio_button_dialog(add_dialog, option_dict[column_name.upper()], i, 1)
+                elif column_name.upper() == "TYPE":
+                    option_var = create_inline_radio_buttons(add_dialog, option_dict[column_name.upper()], i, 1)
+                else:
+                    option_var = create_option_menu(add_dialog, option_dict[column_name.upper()], i, 1)
                 entries.append(option_var)
             else:
                 entry = Entry(add_dialog)
@@ -468,6 +525,7 @@ class DatabaseApp:
                 entries.append(entry)
 
 
+    
     def add_new_row(self):
         # Create a new Toplevel window
         add_dialog = Toplevel(self.root)
