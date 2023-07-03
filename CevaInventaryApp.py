@@ -7,6 +7,7 @@ import csv
 import json
 import os
 from mysql.connector import Error
+import subprocess
 #todo:
 #Reminder: There is a lot of redundant code in the row functions, must be optimized
             
@@ -73,7 +74,7 @@ class DatabaseApp:
         self.root.geometry("1920x1080")
         self.column_configurations = {}
         # Connection
-        self.connection = self.create_connection("localhost", "vscode", "2458", "inventary")
+        self.connection = self.create_connection("localhost", "VsCode", "2458", "inventary")
         
         # Create cursor
         self.context_menu = Menu(self.root, tearoff=0)
@@ -505,9 +506,12 @@ class DatabaseApp:
         if os.path.exists(r'\\esoga01vwtfs01\Tools\CevaINventoryApp\Json\dictionaries.json'):
             with open(r'\\esoga01vwtfs01\Tools\CevaINventoryApp\Json\dictionaries.json', 'r') as f:
                 option_dict = json.load(f)
-        else:
-            with open('../Json/dictionaries.json', 'w') as f:
-                json.dump({}, f)
+        elif os.path.exists('../Json/dictionaries.json'):
+            with open('../Json/dictionaries.json', 'r') as f:
+                option_dict = json.load(f)
+        elif os.path.exists('Json/dictionaries.json'):
+            with open ('Json/dictionaries.json', 'r') as f:
+                option_dict = json.load(f)
 
         for i, column_name in enumerate(column_names[1:], start=1):  # starting from 1 to skip 'id' column
             Label(add_dialog, text=f"{column_name}").grid(row=i, column=0)
@@ -611,6 +615,7 @@ class DatabaseApp:
         
     def add_and_close_dialog(self, add_dialog, values):
         if self.insert_row_stock_computers(values):
+            self.connection.commit()
             add_dialog.destroy()  # Close the add_dialog window if data insertion is successful
                 
     def insert_row(self, new_values):
@@ -690,9 +695,19 @@ class DatabaseApp:
         Button(filter_dialog, text="Apply filters", command=apply_filters).grid(row=101, column=0, columnspan=2)
         
     def add_data(self):
-        with open(r'\\esoga01vwtfs01\Tools\CevaINventoryApp\Json\dictionaries.json', 'r') as f:
-            option_dict = json.load(f)
-
+        if os.path.exists(r'\\esoga01vwtfs01\Tools\CevaINventoryApp\Json\dictionaries.json'):
+            with open(r'\\esoga01vwtfs01\Tools\CevaINventoryApp\Json\dictionaries.json', 'r') as f:
+                option_dict = json.load(f)
+                path = r'\\esoga01vwtfs01\Tools\CevaINventoryApp\Json\dictionaries.json'
+        elif os.path.exists("../Json/dictionaries.json"):
+            with open("../Json/dictionaries.json", 'r') as f:
+                option_dict = json.load(f)
+                path = "../Json/dictionaries.json"
+        elif os.path.exists("Json/dictionaries.json"):
+            with open("Json/dictionaries.json", 'r') as f:
+                option_dict = json.load(f)
+                path = "Json/dictionaries.json"
+        print ("the dictionary path is: ", path)
         def save_data():
             key = key_var.get()
             value = value_entry.get()
@@ -806,9 +821,82 @@ class DatabaseApp:
         messagebox.showerror(title, message, parent=self.root)
 
 
+#This is the version checker for the program, it will compare the server stored version
+#with the local version, if they are the same the program will run, if not it will show an error message
+#and the user will have to update the program copying the new version from the server
+#in the future this will be done automatically still need to figure out how to do it
+#In the test brach the version checker will check the version.txt file in the local folder
+#because it has not access to the UAT test server
+    #The commented lines must be used in the main branch as mentioned above this lines are 
+    #commented because the test branch has no access to the server
+def center_window(root):
+    # Get window and screen width and height
+    window_width = root.winfo_reqwidth()
+    window_height = root.winfo_reqheight()
+    screen_width = root.winfo_screenwidth()
+    screen_height = root.winfo_screenheight()
 
+    # Calculate position coordinates
+    position_top = int(screen_height / 2 - window_height / 2)
+    position_right = int(screen_width / 2 - window_width / 2)
 
-root = Tk()
-app = DatabaseApp(root)
-root.mainloop()
+    # Place the window in the center of the screen
+    root.geometry("+{}+{}".format(position_right, position_top))
+
+def check_version():
+    try:
+        version_path = ""
+        if os.path.exists("version.txt"):
+            version_path = "version.txt"
+        else :
+            version_path = "../version.txt"
+        with open(version_path, "r") as file2:
+            version2 = file2.read().strip()
+        return "1" == version2
+    except Exception as e:
+        messagebox.showerror("Error", f"Error: {str(e)}.")
+        print(f"Error: {str(e)}.")
+        return False
+
+def start_program(check_root):
+    # Check version condition
+    if check_version():
+        # Show message box
+        messagebox.showinfo("Info", "Welcome to the Ceva-Inventory-App!")
+        # Destroy the check window
+        check_root.destroy()
+        # Create main application window
+        root = tk.Tk()
+        # Initialize DatabaseApp
+        app = DatabaseApp(root)
+        root.mainloop()
+    else:
+        print("Version mismatch, program will not run.")
+
+def create_check_gui():
+    check_root = tk.Tk()
+
+    # Load the image file
+    if os.path.exists("ceva.png"):
+        bg_image = tk.PhotoImage(file="ceva.png")  # Replace with your image file path
+    elif os.path.exists("../ceva.png"):
+        bg_image = tk.PhotoImage(file="../ceva.png")
+    # Create a Canvas, set its width and height to the image's dimensions
+    canvas = tk.Canvas(check_root, width=bg_image.width(), height=bg_image.height())
+    canvas.pack()
+
+    # Add the image on the Canvas
+    canvas.create_image(0, 0, image=bg_image, anchor="nw")
+
+    # Now add the button on top of the image
+    check_button = tk.Button(check_root, text="Check version and start program", command=lambda: start_program(check_root))
+    canvas.create_window(bg_image.width() / 2, bg_image.height() / 2, window=check_button)
+
+    check_root.update()  # Update window to get accurate dimensions
+    center_window(check_root)  # Center the window
+
+    check_root.mainloop()
+
+# This starts the program.
+create_check_gui()
 
