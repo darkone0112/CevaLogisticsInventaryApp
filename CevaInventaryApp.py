@@ -75,8 +75,8 @@ class DatabaseApp:
         self.column_configurations = {}
         # Connection
         
-        self.connection = self.create_connection("esoga01vwtfs01", "vscode", "2458", "inventary")
-        
+        #self.connection = self.create_connection("esoga01vwtfs01", "vscode", "2458", "inventary")
+        self.connection = self.create_connection("localhost", "VsCode", "2458", "inventary")
         # Create cursor
         self.context_menu = Menu(self.root, tearoff=0)
         self.context_menu.add_command(label='Update', command=self.update_row_dialog)
