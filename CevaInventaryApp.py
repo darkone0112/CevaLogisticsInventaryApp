@@ -695,6 +695,7 @@ class DatabaseApp:
         Button(filter_dialog, text="Apply filters", command=apply_filters).grid(row=101, column=0, columnspan=2)
         
     def add_data(self):
+        path = ""
         if os.path.exists(r'\\esoga01vwtfs01\Tools\CevaINventoryApp\Json\dictionaries.json'):
             with open(r'\\esoga01vwtfs01\Tools\CevaINventoryApp\Json\dictionaries.json', 'r') as f:
                 option_dict = json.load(f)
@@ -722,7 +723,7 @@ class DatabaseApp:
             else:
                 option_dict[key].append(value)
 
-            with open(r'\\esoga01vwtfs01\Tools\CevaINventoryApp\Json\dictionaries.json', 'w') as f:
+            with open(path, 'w') as f:
                 json.dump(option_dict, f, indent=3)
 
             messagebox.showinfo("Success", "Data added successfully")
@@ -739,7 +740,7 @@ class DatabaseApp:
             if value in option_dict[key]:
                 option_dict[key].remove(value)
 
-                with open(r'\\esoga01vwtfs01\Tools\CevaINventoryApp\Json\dictionaries.json', 'w') as f:
+                with open(path, 'w') as f:
                     json.dump(option_dict, f, indent=4)
 
                 messagebox.showinfo("Success", "Data deleted successfully")
