@@ -73,7 +73,7 @@ class DatabaseApp:
         self.root.geometry("1920x1080")
         self.column_configurations = {}
         # Connection
-        self.connection = self.create_connection("localhost", "vscode", "2458", "inventary")
+        self.connection = self.create_connection("esoga01vwtfs01", "vscode", "2458", "inventary")
         
         # Create cursor
         self.context_menu = Menu(self.root, tearoff=0)
