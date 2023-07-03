@@ -73,7 +73,7 @@ class DatabaseApp:
         self.root.geometry("1920x1080")
         self.column_configurations = {}
         # Connection
-        self.connection = self.create_connection("localhost", "VsCode", "2458", "inventary")
+        self.connection = self.create_connection("esoga01vwtfs01", "vscode", "2458", "inventary")
         
         # Create cursor
         self.context_menu = Menu(self.root, tearoff=0)
@@ -502,8 +502,8 @@ class DatabaseApp:
             dialog.destroy()
 
         # Load the data from JSON
-        if os.path.exists('Json/dictionaries.json'):
-            with open('Json/dictionaries.json') as f:
+        if os.path.exists(r'\\esoga01vwtfs01\Tools\CevaINventoryApp\Json\dictionaries.json'):
+            with open(r'\\esoga01vwtfs01\Tools\CevaINventoryApp\Json\dictionaries.json', 'r') as f:
                 option_dict = json.load(f)
         else:
             with open('../Json/dictionaries.json', 'w') as f:
@@ -690,7 +690,7 @@ class DatabaseApp:
         Button(filter_dialog, text="Apply filters", command=apply_filters).grid(row=101, column=0, columnspan=2)
         
     def add_data(self):
-        with open(os.path.join('Json', 'dictionaries.json'), 'r') as f:
+        with open(r'\\esoga01vwtfs01\Tools\CevaINventoryApp\Json\dictionaries.json', 'r') as f:
             option_dict = json.load(f)
 
         def save_data():
@@ -701,12 +701,17 @@ class DatabaseApp:
                 messagebox.showerror("Error", "Both fields must be filled out")
                 return
 
-            option_dict[key].append(value)
+            if key in ['WFH', 'OPS']:
+                option_dict['WFH'].append(value)
+                option_dict['OPS'].append(value)
+            else:
+                option_dict[key].append(value)
 
-            with open(os.path.join('Json', 'dictionaries.json'), 'w') as f:
+            with open(r'\\esoga01vwtfs01\Tools\CevaINventoryApp\Json\dictionaries.json', 'w') as f:
                 json.dump(option_dict, f, indent=3)
 
             messagebox.showinfo("Success", "Data added successfully")
+
 
         def delete_data():
             key = key_var.get()
@@ -719,7 +724,7 @@ class DatabaseApp:
             if value in option_dict[key]:
                 option_dict[key].remove(value)
 
-                with open(os.path.join('Json', 'dictionaries.json'), 'w') as f:
+                with open(r'\\esoga01vwtfs01\Tools\CevaINventoryApp\Json\dictionaries.json', 'w') as f:
                     json.dump(option_dict, f, indent=4)
 
                 messagebox.showinfo("Success", "Data deleted successfully")
