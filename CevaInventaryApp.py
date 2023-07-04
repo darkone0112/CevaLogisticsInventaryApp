@@ -75,7 +75,10 @@ class DatabaseApp:
         self.column_configurations = {}
         # Connection
         
-        self.connection = self.create_connection("esoga01vwtfs01", "vscode", "2458", "inventary")
+        
+        #self.connection = self.create_connection("esoga01vwtfs01", "vscode", "2458", "inventary")
+        self.connection = self.create_connection("localhost", "VsCode", "2458", "inventary")
+        
         
         # Create cursor
         self.context_menu = Menu(self.root, tearoff=0)
@@ -342,7 +345,7 @@ class DatabaseApp:
 
 
 
-
+    #add dialog to update row if wanted to close the widget after update
     def update_row(self, new_values):
         if self.current_row:
             cursor = self.connection.cursor()
@@ -366,6 +369,8 @@ class DatabaseApp:
             cursor.execute(update_query)
             self.connection.commit()
             self.change_table(self.current_table)  # Refresh table
+            #This line must be uncommented if you want to close the widget after update
+            #dialog.destroy()
 
 
 
@@ -440,7 +445,10 @@ class DatabaseApp:
                 entry.insert(0, value)
 
         # Add a button that updates the row when clicked
+        #Line that will not close the widget after update, also uncomment the line in update_row function
         Button(update_dialog, text="Update", command=lambda: self.update_row([self.current_row[0]] + [e.get() if isinstance(e, Entry) else e.get() for e in entries])).grid(row=len(column_names), column=0, columnspan=2, pady=10)
+        #Line that will close the widget after update, also uncomment the line in update_row function
+        #Button(update_dialog, text="Update", command=lambda: self.update_row([self.current_row[0]] + [e.get() if isinstance(e, Entry) else e.get() for e in entries], update_dialog)).grid(row=len(column_names), column=0, columnspan=2, pady=10)
 
     
     def generate_row_widgets(self, add_dialog, column_names, entries):
@@ -546,9 +554,10 @@ class DatabaseApp:
             # Generate widgets for each row
             self.generate_row_widgets(add_dialog, column_names, entries)
             # Add a button that adds the row when clicked
-            Button(add_dialog, text="Add", command=lambda: self.insert_row([e.get() for e in entries])).grid(row=len(column_names), column=0, columnspan=2)
+            Button(add_dialog, text="Add", command=lambda: self.add_and_close_dialog(add_dialog, [e.get() for e in entries])).grid(row=len(column_names), column=0, columnspan=2)
         else:
             self.error_box("Error", "Cannot assign to: " + self.current_table + " in only possible to assign to one of the main tables")
+
     def get_next_id(self):
         cursor = self.connection.cursor()
 
@@ -607,7 +616,7 @@ class DatabaseApp:
             cursor.execute(query, values)
             self.connection.commit()
 
-            messagebox.showinfo("Success", "Row inserted successfully")
+            #messagebox.showinfo("Success", "Row inserted successfully")
             return True  # Return True on success
             
         except Exception as e:
@@ -615,9 +624,22 @@ class DatabaseApp:
             return False  # Return False on failure
         
     def add_and_close_dialog(self, add_dialog, values):
-        if self.insert_row_stock_computers(values):
+        print("add_and_close_dialog called")  # Debugging print
+        result = self.insert_row_stock_computers(values)
+        print("insert_row_stock_computers returned", result)  # Debugging print
+        if result:
+            messagebox.showinfo("Success", "Row added successfully.")  # Show success message
             self.connection.commit()
-            add_dialog.destroy()  # Close the add_dialog window if data insertion is successful
+            print("About to destroy add_dialog")  # Debugging print
+            try:
+                add_dialog.destroy()
+            except Exception as e:
+                print("Exception when trying to destroy add_dialog:", e)
+        else:
+            messagebox.showinfo("Failed", "Row addition failed.")  # Show failure message
+
+
+
                 
     def insert_row(self, new_values):
         cursor = self.connection.cursor()
@@ -696,6 +718,7 @@ class DatabaseApp:
         Button(filter_dialog, text="Apply filters", command=apply_filters).grid(row=101, column=0, columnspan=2)
         
     def add_data(self):
+        path = ""
         if os.path.exists(r'\\esoga01vwtfs01\Tools\CevaINventoryApp\Json\dictionaries.json'):
             with open(r'\\esoga01vwtfs01\Tools\CevaINventoryApp\Json\dictionaries.json', 'r') as f:
                 option_dict = json.load(f)
@@ -723,7 +746,7 @@ class DatabaseApp:
             else:
                 option_dict[key].append(value)
 
-            with open(r'\\esoga01vwtfs01\Tools\CevaINventoryApp\Json\dictionaries.json', 'w') as f:
+            with open(path, 'w') as f:
                 json.dump(option_dict, f, indent=3)
 
             messagebox.showinfo("Success", "Data added successfully")
@@ -740,7 +763,7 @@ class DatabaseApp:
             if value in option_dict[key]:
                 option_dict[key].remove(value)
 
-                with open(r'\\esoga01vwtfs01\Tools\CevaINventoryApp\Json\dictionaries.json', 'w') as f:
+                with open(path, 'w') as f:
                     json.dump(option_dict, f, indent=4)
 
                 messagebox.showinfo("Success", "Data deleted successfully")
@@ -844,16 +867,60 @@ def center_window(root):
     # Place the window in the center of the screen
     root.geometry("+{}+{}".format(position_right, position_top))
 
-def check_version():
+
+#
+#This is the check_version and start_program functions that will be used in the test branch
+#
+def check_version_local():
     try:
-        version_path = ""
+        return True  # Always returns True for local testing
+    except Exception as e:
+        messagebox.showerror("Error", f"Error: {str(e)}.")
+        print(f"Error: {str(e)}.")
+        return False
+
+def start_program(check_root):
+    # Check version condition
+    if check_version_local():
+        # Show message box
+        messagebox.showinfo("Info", "Welcome to the Ceva-Inventory-App (Local Test)!")
+        # Destroy the check window
+        check_root.destroy()
+        # Create main application window
+        root = tk.Tk()
+        # Initialize DatabaseApp
+        app = DatabaseApp(root)
+        root.mainloop()
+    else:
+        print("Something went wrong, program will not run.")
+        # Display error messagebox
+        messagebox.showerror("Error", "An error occurred.")
+
+
+#
+#This is the check_version and start_program functions that will be used in the main branch
+#
+#
+""" def check_version():
+    try:
+        local_version = ""
+        server_version = r'\\esoga01vwtfs01\Tools\CevaINventoryApp\version.txt'
         if os.path.exists("version.txt"):
-            version_path = "version.txt"
+            local_version = "version.txt"
         else :
-            version_path = "../version.txt"
-        with open(version_path, "r") as file2:
-            version2 = file2.read().strip()
-        return "1" == version2
+            local_version = "../version.txt"
+
+        # Read the local version
+        with open(local_version, "r") as file_local:
+            local_version_content = file_local.read().strip()
+        
+        # Read the server version
+        with open(server_version, "r") as file_server:
+            server_version_content = file_server.read().strip()
+
+        # Compare the local and server versions
+        return local_version_content == server_version_content
+
     except Exception as e:
         messagebox.showerror("Error", f"Error: {str(e)}.")
         print(f"Error: {str(e)}.")
@@ -873,6 +940,9 @@ def start_program(check_root):
         root.mainloop()
     else:
         print("Version mismatch, program will not run.")
+        # Display error messagebox
+        messagebox.showerror("Error", "Version mismatch, you need to download the correct version located in esoga01vwtfs01.")
+ """
 
 def create_check_gui():
     check_root = tk.Tk()
