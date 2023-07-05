@@ -76,8 +76,8 @@ class DatabaseApp:
         # Connection
         
         
-        #self.connection = self.create_connection("esoga01vwtfs01", "vscode", "2458", "inventary")
-        self.connection = self.create_connection("localhost", "VsCode", "2458", "inventary")
+        self.connection = self.create_connection("esoga01vwtfs01", "vscode", "2458", "inventary")
+        #self.connection = self.create_connection("localhost", "VsCode", "2458", "inventary")
         
         
         # Create cursor
@@ -871,7 +871,7 @@ def center_window(root):
 #
 #This is the check_version and start_program functions that will be used in the test branch
 #
-def check_version_local():
+""" def check_version_local():
     try:
         return True  # Always returns True for local testing
     except Exception as e:
@@ -895,13 +895,13 @@ def start_program(check_root):
         print("Something went wrong, program will not run.")
         # Display error messagebox
         messagebox.showerror("Error", "An error occurred.")
-
+ """
 
 #
 #This is the check_version and start_program functions that will be used in the main branch
 #
 #
-""" def check_version():
+def check_version():
     try:
         local_version = ""
         server_version = r'\\esoga01vwtfs01\Tools\CevaINventoryApp\version.txt'
@@ -942,16 +942,17 @@ def start_program(check_root):
         print("Version mismatch, program will not run.")
         # Display error messagebox
         messagebox.showerror("Error", "Version mismatch, you need to download the correct version located in esoga01vwtfs01.")
- """
+
 
 def create_check_gui():
     check_root = tk.Tk()
-
+    test_path = "ceva.png"
+    main_path = "../img/ceva.png"
     # Load the image file
-    if os.path.exists("ceva.png"):
-        bg_image = tk.PhotoImage(file="ceva.png")  # Replace with your image file path
-    elif os.path.exists("../ceva.png"):
-        bg_image = tk.PhotoImage(file="../ceva.png")
+    if os.path.exists(main_path):
+        bg_image = tk.PhotoImage(file=main_path)  # Replace with your image file path
+    elif os.path.exists(test_path):
+        bg_image = tk.PhotoImage(file=test_path)
     # Create a Canvas, set its width and height to the image's dimensions
     canvas = tk.Canvas(check_root, width=bg_image.width(), height=bg_image.height())
     canvas.pack()
