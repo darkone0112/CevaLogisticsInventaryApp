@@ -54,10 +54,10 @@ class JsonToMySQLConverter:
 
                 # connect to the MySQL database
                 cnx = mysql.connector.connect(
-                    #host="localhost",
-                    host="esoga01vwtfs01",
-                    #user="VsCode",
-                    user="vscode",
+                    host="localhost",
+                    #host="esoga01vwtfs01",
+                    user="VsCode",
+                    #user="vscode",
                     password="2458",
                     database=self.database
                 )

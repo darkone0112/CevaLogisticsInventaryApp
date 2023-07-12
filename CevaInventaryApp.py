@@ -76,8 +76,8 @@ class DatabaseApp:
         # Connection
         
         
-        self.connection = self.create_connection("esoga01vwtfs01", "vscode", "2458", "inventary")
-        #self.connection = self.create_connection("localhost", "VsCode", "2458", "inventary")
+        #self.connection = self.create_connection("esoga01vwtfs01", "vscode", "2458", "inventary")
+        self.connection = self.create_connection("localhost", "VsCode", "2458", "inventary")
         
         
         # Create cursor
@@ -871,7 +871,7 @@ def center_window(root):
 #
 #This is the check_version and start_program functions that will be used in the test branch
 #
-""" def check_version_local():
+def check_version_local():
     try:
         return True  # Always returns True for local testing
     except Exception as e:
@@ -895,13 +895,13 @@ def start_program(check_root):
         print("Something went wrong, program will not run.")
         # Display error messagebox
         messagebox.showerror("Error", "An error occurred.")
- """
+
 
 #
 #This is the check_version and start_program functions that will be used in the main branch
 #
 #
-def check_version():
+""" def check_version():
     try:
         local_version = ""
         server_version = r'\\esoga01vwtfs01\Tools\CevaINventoryApp\version.txt'
@@ -941,7 +941,7 @@ def start_program(check_root):
     else:
         print("Version mismatch, program will not run.")
         # Display error messagebox
-        messagebox.showerror("Error", "Version mismatch, you need to download the correct version located in esoga01vwtfs01.")
+        messagebox.showerror("Error", "Version mismatch, you need to download the correct version located in esoga01vwtfs01.") """
 
 
 def create_check_gui():
