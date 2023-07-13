@@ -627,16 +627,19 @@ class DatabaseApp:
         print("add_and_close_dialog called")  # Debugging print
         result = insert_func(values)  # Use passed function instead of hardcoded one
         print(f"{insert_func.__name__} returned", result)  # Debugging print
-        if result:
-            messagebox.showinfo("Success", "Row added successfully.")  # Show success message
-            self.connection.commit()
+
+        # message box and commit moved inside the try block to ensure dialog closure
+        try:
+            if result:
+                messagebox.showinfo("Success", "Row added successfully.")  # Show success message
+                self.connection.commit()
+            else:
+                messagebox.showinfo("Failed", "Row addition failed.")  # Show failure message
+
             print("About to destroy add_dialog")  # Debugging print
-            try:
-                add_dialog.destroy()
-            except Exception as e:
-                print("Exception when trying to destroy add_dialog:", e)
-        else:
-            messagebox.showinfo("Failed", "Row addition failed.")  # Show failure message
+            add_dialog.destroy()
+        except Exception as e:
+            print("Exception when trying to destroy add_dialog:", e)
 
 
 
@@ -647,12 +650,17 @@ class DatabaseApp:
         
         # Fetch column names
         cursor.execute(f"SHOW COLUMNS FROM {self.current_table}")
-        column_names = [column[0] for column in cursor.fetchall()][1:]  # Skip 'id' column
+        column_names = [column[0] for column in cursor.fetchall()]  # Include 'id' column
+
+        # Get the next valid id
+        next_id = self.get_next_id()
+        new_values = [next_id] + new_values  # Prepend the id to the list of new_values
 
         insert_query = f"INSERT INTO {self.current_table} ({', '.join(column_names)}) VALUES ({', '.join(['%s'] * len(new_values))})"
         cursor.execute(insert_query, new_values)
         self.connection.commit()
         self.change_table(self.current_table)  # Refresh table
+
         
     def filter_dialog(self):
         # Create a new Toplevel window
