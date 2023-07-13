@@ -53,14 +53,24 @@ class JsonToMySQLConverter:
                 table_name = os.path.splitext(os.path.basename(self.json_file_path))[0]
 
                 # connect to the MySQL database
-                cnx = mysql.connector.connect(
-                    host="localhost",
-                    #host="esoga01vwtfs01",
-                    user="VsCode",
-                    #user="vscode",
-                    password="2458",
-                    database=self.database
-                )
+                try:
+                    cnx = mysql.connector.connect(
+                        #host="localhost",
+                        host="esoga01vwtfs01",
+                        #user="VsCode",
+                        user="vscode",
+                        password="2458",
+                        database=self.database
+                    )
+                except mysql.connector.Error as err:
+                    cnx = mysql.connector.connect(
+                        host="localhost",
+                        #host="esoga01vwtfs01",
+                        user="VsCode",
+                        #user="vscode",
+                        password="2458",
+                        database=self.database
+                    )
 
                 # create a cursor object
                 cursor = cnx.cursor()
