@@ -71,13 +71,14 @@ class DatabaseApp:
 
             #Very Light Blue: #0073e6 - This is a very light shade of blue, almost sky blue. It could be used for highlighting important information or buttons.
         self.last_filter = None
-        self.root.title("Ceva Inventary App")
+        self.root.title("Ceva Inventory App")
         self.root.geometry("1920x1080")
         self.column_configurations = {}
         # Connection
         
         try:
             self.connection = self.create_connection("esoga01vwtfs01", "vscode", "2458", "inventary")
+            #self.connection = self.create_connection("localhost", "VsCode", "2458", "inventary")
         except Exception as e:
             messagebox.showerror("Error", f"Error while connecting to the database: {str(e)}")
             try:
