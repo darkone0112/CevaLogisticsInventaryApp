@@ -77,8 +77,8 @@ class DatabaseApp:
         # Connection
         
         try:
-            self.connection = self.create_connection("esoga01vwtfs01", "vscode", "2458", "inventary")
-            #self.connection = self.create_connection("localhost", "VsCode", "2458", "inventary")
+            #self.connection = self.create_connection("esoga01vwtfs01", "vscode", "2458", "inventary")
+            self.connection = self.create_connection("localhost", "VsCode", "2458", "inventary")
         except Exception as e:
             messagebox.showerror("Error", f"Error while connecting to the database: {str(e)}")
             try:
