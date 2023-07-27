@@ -50,10 +50,21 @@ import subprocess
 from tkinter import *
 from tkinter import messagebox, ttk
 
+ddbb_server_prod  = "esoga01vwtfs01"
+ddbb_user_prod = "vscode"
+ddbb_password_prod = "2458"
+ddbb_name_prod = "inventary"
+
+# These should be filled with your local data for testing
+ddbb_server_test  = "localhost"
+ddbb_user_test = "VsCode"
+ddbb_password_test = "2458"
+ddbb_name_test = "inventary"
+
 class DatabaseApp:
     DDBB_status = ""
     columns_with_manual_filtering = ["Name_Device", "S_N", "User", "User_AD", "PO_Number", "id"]
-    def __init__(self, root):
+    def __init__(self, root,ddbb_server,ddbb_user,ddbb_password,ddbb_name):
         self.root = root
         self.root.state('zoomed')
         self.root.configure(bg='#002147') # Set background color of root
@@ -76,15 +87,9 @@ class DatabaseApp:
         self.column_configurations = {}
         # Connection
         
-        try:
             #self.connection = self.create_connection("esoga01vwtfs01", "vscode", "2458", "inventary")
-            self.connection = self.create_connection("localhost", "VsCode", "2458", "inventary")
-        except Exception as e:
-            messagebox.showerror("Error", f"Error while connecting to the database: {str(e)}")
-            try:
-                self.connection = self.create_connection("localhost", "VsCode", "2458", "inventary")
-            except Exception as e:
-                messagebox.showerror("Error", f"Error while connecting to the second database: {str(e)}")
+        self.connection = self.create_connection(ddbb_server, ddbb_user, ddbb_password, ddbb_name)
+
 
         # Create cursorz
         self.context_menu = Menu(self.root, tearoff=0)
@@ -907,6 +912,12 @@ def center_window(root):
 #This is the check_version and start_program functions that will be used in the main branch
 #
 #
+def get_ddbb_credentials(is_test_env):
+    if is_test_env:
+        return ddbb_server_test, ddbb_user_test, ddbb_password_test, ddbb_name_test
+    else:
+        return ddbb_server_prod, ddbb_user_prod, ddbb_password_prod, ddbb_name_prod
+
 def check_version():
     try:
         local_version = ""
@@ -925,20 +936,21 @@ def check_version():
             server_version_content = file_server.read().strip()
 
         # Compare the local and server versions
-        return local_version_content == server_version_content
+        return local_version_content == server_version_content, False  # False means this is not a test environment
 
     except Exception as e:
         try:
             messagebox.showinfo("Info", "Welcome to the Ceva-Inventory-App (Local Test)!This is a test version, please download the correct version located in esoga01vwtfs01.")
-            return True  # Always returns True for local testing
+            return True, True  # True means this is a test environment
         except Exception as e:
             messagebox.showerror("Error", f"Error: {str(e)}.")
             print(f"Error: {str(e)}.")
-            return False
+            return False, False
 
 def start_program(check_root):
     # Check version condition
-    if check_version():
+    is_same_version, is_test_env = check_version()
+    if is_same_version:
         # Show message box
         messagebox.showinfo("Info", "Welcome to the Ceva-Inventory-App!")
         # Destroy the check window
@@ -946,13 +958,18 @@ def start_program(check_root):
         # Create main application window
         root = tk.Tk()
         # Initialize DatabaseApp
-        app = DatabaseApp(root)
+        ddbb_server, ddbb_user, ddbb_password, ddbb_name = get_ddbb_credentials(is_test_env)
+        app = DatabaseApp(root, ddbb_server, ddbb_user, ddbb_password, ddbb_name)
+        
+        # Show messagebox about the database connection
+        db_message = f"Connected to the test database: {ddbb_name} on server: {ddbb_server}" if is_test_env else f"Connected to the production database: {ddbb_name} on server: {ddbb_server}"
+        messagebox.showinfo("DB Info", db_message)
+        
         root.mainloop()
     else:
         print("Version mismatch, program will not run.")
         # Display error messagebox
         messagebox.showerror("Error", "Version mismatch, you need to download the correct version located in esoga01vwtfs01.")
-
 
 def create_check_gui():
     check_root = tk.Tk()
