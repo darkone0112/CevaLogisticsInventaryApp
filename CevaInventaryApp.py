@@ -51,6 +51,7 @@ from tkinter import *
 from tkinter import messagebox, ttk
 
 class DatabaseApp:
+    DDBB_status = ""
     columns_with_manual_filtering = ["Name_Device", "S_N", "User", "User_AD", "PO_Number", "id"]
     def __init__(self, root):
         self.root = root
@@ -70,17 +71,22 @@ class DatabaseApp:
 
             #Very Light Blue: #0073e6 - This is a very light shade of blue, almost sky blue. It could be used for highlighting important information or buttons.
         self.last_filter = None
-        self.root.title("Ceva Inventary App")
+        self.root.title("Ceva Inventory App")
         self.root.geometry("1920x1080")
         self.column_configurations = {}
         # Connection
         
-        
-        self.connection = self.create_connection("esoga01vwtfs01", "vscode", "2458", "inventary")
-        #self.connection = self.create_connection("localhost", "VsCode", "2458", "inventary")
-        
-        
-        # Create cursor
+        try:
+            #self.connection = self.create_connection("esoga01vwtfs01", "vscode", "2458", "inventary")
+            self.connection = self.create_connection("localhost", "VsCode", "2458", "inventary")
+        except Exception as e:
+            messagebox.showerror("Error", f"Error while connecting to the database: {str(e)}")
+            try:
+                self.connection = self.create_connection("localhost", "VsCode", "2458", "inventary")
+            except Exception as e:
+                messagebox.showerror("Error", f"Error while connecting to the second database: {str(e)}")
+
+        # Create cursorz
         self.context_menu = Menu(self.root, tearoff=0)
         self.context_menu.add_command(label='Update', command=self.update_row_dialog)
         self.context_menu.add_command(label='Assign', command=self.main_row)
@@ -155,10 +161,11 @@ class DatabaseApp:
             print("Connection to MySQL DB successful")
         except Error as e:
             print(f"The error '{e}' occurred")
-
+        self.refresh_table
         return connection
-
+    
     def change_table(self, table_name):
+        
         self.current_table = table_name
 
         # Fetch data from table
@@ -182,8 +189,8 @@ class DatabaseApp:
             # Otherwise, create a new configuration
             self.column_configurations[table_name] = {}
             for col in column_names:
-                self.tree.column(col, width=190, anchor="center")  # adjust the width to suit your needs
-                self.column_configurations[table_name][col] = 190  # Store the width
+                self.tree.column(col, width=128, anchor="center")  # adjust the width to suit your needs
+                self.column_configurations[table_name][col] = 100  # Store the width
 
         # Set column titles for each column
         for col in column_names:
@@ -346,7 +353,7 @@ class DatabaseApp:
 
 
     #add dialog to update row if wanted to close the widget after update
-    def update_row(self, new_values):
+    def update_row(self, new_values, update_dialog=None):  # Make update_dialog optional
         if self.current_row:
             cursor = self.connection.cursor()
             
@@ -369,8 +376,34 @@ class DatabaseApp:
             cursor.execute(update_query)
             self.connection.commit()
             self.change_table(self.current_table)  # Refresh table
-            #This line must be uncommented if you want to close the widget after update
-            #dialog.destroy()
+
+            # Close the dialog after updating if update_dialog is not None
+            if update_dialog is not None:
+                update_dialog.destroy()
+
+    def update_row_dialog(self):
+        if not self.current_row:
+            messagebox.showinfo("No row selected", "Please select a row to update")
+            return
+
+        update_dialog = Toplevel(self.root)
+        update_dialog.title("Update row")
+
+        entries = []
+        cursor = self.connection.cursor()
+        cursor.execute(f"SHOW COLUMNS FROM {self.current_table}")
+        column_names = [column[0] for column in cursor.fetchall()]
+
+        self.generate_row_widgets(update_dialog, column_names, entries)
+
+        for entry, value in zip(entries, self.current_row[1:]):
+            if isinstance(entry, StringVar):
+                entry.set(value)
+            else:
+                entry.insert(0, value)
+
+        Button(update_dialog, text="Update", command=lambda: self.update_row([self.current_row[0]] + [e.get() if isinstance(e, Entry) else e.get() for e in entries], update_dialog)).grid(row=len(column_names), column=0, columnspan=2, pady=10)
+                
 
 
 
@@ -417,38 +450,6 @@ class DatabaseApp:
     # Select row under mouse
         self.tree.identify_row(event.y)
         self.context_menu.post(event.x_root, event.y_root)
-
-    def update_row_dialog(self):
-        # Check if a row has been selected
-        if not self.current_row:
-            messagebox.showinfo("No row selected", "Please select a row to update")
-            return
-
-        # Create a new Toplevel window
-        update_dialog = Toplevel(self.root)
-        update_dialog.title("Update row")
-
-        # Create an Entry for each field in the row
-        entries = []
-        cursor = self.connection.cursor()
-        cursor.execute(f"SHOW COLUMNS FROM {self.current_table}")
-        column_names = [column[0] for column in cursor.fetchall()]
-
-        # Generate widgets for each row
-        self.generate_row_widgets(update_dialog, column_names, entries)
-
-        # Set the value of each widget to the current value of the row
-        for entry, value in zip(entries, self.current_row[1:]):  # starting from index 1 to skip 'id' column
-            if isinstance(entry, StringVar):
-                entry.set(value)
-            else:
-                entry.insert(0, value)
-
-        # Add a button that updates the row when clicked
-        #Line that will not close the widget after update, also uncomment the line in update_row function
-        Button(update_dialog, text="Update", command=lambda: self.update_row([self.current_row[0]] + [e.get() if isinstance(e, Entry) else e.get() for e in entries])).grid(row=len(column_names), column=0, columnspan=2, pady=10)
-        #Line that will close the widget after update, also uncomment the line in update_row function
-        #Button(update_dialog, text="Update", command=lambda: self.update_row([self.current_row[0]] + [e.get() if isinstance(e, Entry) else e.get() for e in entries], update_dialog)).grid(row=len(column_names), column=0, columnspan=2, pady=10)
 
     
     def generate_row_widgets(self, add_dialog, column_names, entries):
@@ -554,7 +555,7 @@ class DatabaseApp:
             # Generate widgets for each row
             self.generate_row_widgets(add_dialog, column_names, entries)
             # Add a button that adds the row when clicked
-            Button(add_dialog, text="Add", command=lambda: self.add_and_close_dialog(add_dialog, [e.get() for e in entries])).grid(row=len(column_names), column=0, columnspan=2)
+            Button(add_dialog, text="Add", command=lambda: self.add_and_close_dialog(self.insert_row, add_dialog, [e.get() for e in entries])).grid(row=len(column_names), column=0, columnspan=2)
         else:
             self.error_box("Error", "Cannot assign to: " + self.current_table + " in only possible to assign to one of the main tables")
 
@@ -591,7 +592,7 @@ class DatabaseApp:
         self.generate_row_widgets(add_dialog, column_names, entries)
         
         # Add a button that adds the row when clicked
-        Button(add_dialog, text="Add", command=lambda: self.add_and_close_dialog(add_dialog, [e.get() for e in entries])).grid(row=len(column_names), column=0, columnspan=2)
+        Button(add_dialog, text="Add", command=lambda: self.add_and_close_dialog(self.insert_row_stock_computers, add_dialog, [e.get() for e in entries])).grid(row=len(column_names), column=0, columnspan=2)
     
     def insert_row_stock_computers(self, values):
         try:
@@ -623,20 +624,24 @@ class DatabaseApp:
             messagebox.showerror("Error", f"An error occurred: {str(e)}")
             return False  # Return False on failure
         
-    def add_and_close_dialog(self, add_dialog, values):
+    def add_and_close_dialog(self, insert_func, add_dialog, values):
         print("add_and_close_dialog called")  # Debugging print
-        result = self.insert_row_stock_computers(values)
-        print("insert_row_stock_computers returned", result)  # Debugging print
-        if result:
-            messagebox.showinfo("Success", "Row added successfully.")  # Show success message
-            self.connection.commit()
+        result = insert_func(values)  # Use passed function instead of hardcoded one
+        print(f"{insert_func.__name__} returned", result)  # Debugging print
+
+        # message box and commit moved inside the try block to ensure dialog closure
+        try:
+            if result:
+                messagebox.showinfo("Success", "Row added successfully.")  # Show success message
+                self.connection.commit()
+            else:
+                messagebox.showinfo("Failed", "Row addition failed.")  # Show failure message
+
             print("About to destroy add_dialog")  # Debugging print
-            try:
-                add_dialog.destroy()
-            except Exception as e:
-                print("Exception when trying to destroy add_dialog:", e)
-        else:
-            messagebox.showinfo("Failed", "Row addition failed.")  # Show failure message
+            add_dialog.destroy()
+        except Exception as e:
+            print("Exception when trying to destroy add_dialog:", e)
+
 
 
 
@@ -646,12 +651,17 @@ class DatabaseApp:
         
         # Fetch column names
         cursor.execute(f"SHOW COLUMNS FROM {self.current_table}")
-        column_names = [column[0] for column in cursor.fetchall()][1:]  # Skip 'id' column
+        column_names = [column[0] for column in cursor.fetchall()]  # Include 'id' column
+
+        # Get the next valid id
+        next_id = self.get_next_id()
+        new_values = [next_id] + new_values  # Prepend the id to the list of new_values
 
         insert_query = f"INSERT INTO {self.current_table} ({', '.join(column_names)}) VALUES ({', '.join(['%s'] * len(new_values))})"
         cursor.execute(insert_query, new_values)
         self.connection.commit()
         self.change_table(self.current_table)  # Refresh table
+
         
     def filter_dialog(self):
         # Create a new Toplevel window
@@ -872,14 +882,10 @@ def center_window(root):
 #This is the check_version and start_program functions that will be used in the test branch
 #
 """ def check_version_local():
-    try:
-        return True  # Always returns True for local testing
-    except Exception as e:
-        messagebox.showerror("Error", f"Error: {str(e)}.")
-        print(f"Error: {str(e)}.")
-        return False
+ """
 
-def start_program(check_root):
+""" def start_program(check_root):
+     
     # Check version condition
     if check_version_local():
         # Show message box
@@ -922,9 +928,13 @@ def check_version():
         return local_version_content == server_version_content
 
     except Exception as e:
-        messagebox.showerror("Error", f"Error: {str(e)}.")
-        print(f"Error: {str(e)}.")
-        return False
+        try:
+            messagebox.showinfo("Info", "Welcome to the Ceva-Inventory-App (Local Test)!This is a test version, please download the correct version located in esoga01vwtfs01.")
+            return True  # Always returns True for local testing
+        except Exception as e:
+            messagebox.showerror("Error", f"Error: {str(e)}.")
+            print(f"Error: {str(e)}.")
+            return False
 
 def start_program(check_root):
     # Check version condition
