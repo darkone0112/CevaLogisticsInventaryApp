@@ -621,8 +621,8 @@ class DatabaseApp:
 
             cursor.execute(query, values)
             self.connection.commit()
-
             #messagebox.showinfo("Success", "Row inserted successfully")
+            self.refresh_table()
             return True  # Return True on success
             
         except Exception as e:
