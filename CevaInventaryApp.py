@@ -50,10 +50,10 @@ import subprocess
 from tkinter import *
 from tkinter import messagebox, ttk
 
-ddbb_server_prod  = "esoga01vwtfs01"
-ddbb_user_prod = "vscode"
-ddbb_password_prod = "2458"
-ddbb_name_prod = "inventary"
+ddbb_server_prod  = "ceva-inventory.duckdns.org"
+ddbb_user_prod = "VsCode"
+ddbb_password_prod = "Mpc8md8p78p175du890f!!"
+ddbb_name_prod = "ceva_duck_prod"
 
 # These should be filled with your local data for testing
 ddbb_server_test  = "localhost"
@@ -621,8 +621,8 @@ class DatabaseApp:
 
             cursor.execute(query, values)
             self.connection.commit()
+
             #messagebox.showinfo("Success", "Row inserted successfully")
-            self.refresh_table()
             return True  # Return True on success
             
         except Exception as e:
