@@ -106,8 +106,8 @@ class DatabaseApp:
         self.table_menu = Menu(self.menu_bar, bg='#003366', fg='white')  # Set table menu colors
         self.menu_bar.add_cascade(label='Tables', menu=self.table_menu)
         self.table_menu.add_command(label='Computers', command=lambda: self.change_table('computers'))
-        self.table_menu.add_command(label='StockComputers', command=lambda: self.change_table('stockcomputers'))
-        self.table_menu.add_command(label='ObsoleteComputers', command=lambda: self.change_table('obsoletecomputers'))
+        self.table_menu.add_command(label='stockcomputers', command=lambda: self.change_table('stockcomputers'))
+        self.table_menu.add_command(label='obsoletecomputers', command=lambda: self.change_table('obsoletecomputers'))
         self.table_menu.add_command(label='Monitors', command=lambda: self.change_table('beta_inventory_barajas'))
         self.table_menu.add_command(label='ricoh', command=lambda: self.change_table('ricoh'))
         self.table_menu.add_command(label='zebra', command=lambda: self.change_table('zebraont'))
@@ -249,15 +249,15 @@ class DatabaseApp:
         if self.current_row:
             cursor = self.connection.cursor()
             try:
-                if self.current_table == "stockComputers" or self.current_table == "obsoleteComputers" or self.current_table == "computers":
-                    stock_table = "stockComputers"
-                    obsolete_table = "obsoleteComputers"
+                if self.current_table == "stockcomputers" or self.current_table == "obsoletecomputers" or self.current_table == "computers":
+                    stock_table = "stockcomputers"
+                    obsolete_table = "obsoletecomputers"
                     main_table = "computers"
                 elif self.current_table == "stockMonitors" or self.current_table == "obsoleteMonitors" or self.current_table == "monitors":
                     stock_table = "stockMonitors"
                     obsolete_table = "obsoleteMonitors"
                     main_table = "monitors"
-                if self.current_table == "stockComputers":
+                if self.current_table == "stockcomputers":
                     self.message_box("Error", "Cannot Stock From Stock Table")
                     print("Row already in stock table")
                 else:
@@ -285,15 +285,15 @@ class DatabaseApp:
         if self.current_row:
             cursor = self.connection.cursor()
             try:
-                if self.current_table == "stockComputers" or self.current_table == "obsoleteComputers" or self.current_table == "computers":
-                    stock_table = "stockComputers"
-                    obsolete_table = "obsoleteComputers"
+                if self.current_table == "stockcomputers" or self.current_table == "obsoletecomputers" or self.current_table == "computers":
+                    stock_table = "stockcomputers"
+                    obsolete_table = "obsoletecomputers"
                     main_table = "computers"
                 elif self.current_table == "stockMonitors" or self.current_table == "obsoleteMonitors" or self.current_table == "monitors":
                     stock_table = "stockMonitors"
                     obsolete_table = "obsoleteMonitors"
                     main_table = "monitors"
-                if self.current_table == "obsoleteComputers":
+                if self.current_table == "obsoletecomputers":
                     self.message_box("Error", "Row already in obsolete table")
                     print("Row already in obsolete table")
                 else:
@@ -322,7 +322,7 @@ class DatabaseApp:
         if self.current_row:
             cursor = self.connection.cursor()
             try:
-                if self.current_table == "stockComputers" or self.current_table == "obsoleteComputers" or self.current_table == "computers":
+                if self.current_table == "stockcomputers" or self.current_table == "obsoletecomputers" or self.current_table == "computers":
                     main_table = "computers"
                 elif self.current_table == "stockMonitors" or self.current_table == "obsoleteMonitors" or self.current_table == "monitors":
                     main_table = "monitors"
