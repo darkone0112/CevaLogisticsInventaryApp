@@ -56,10 +56,10 @@ ddbb_password_prod = "Mpc8md8p78p175du890f!!"
 ddbb_name_prod = "ceva_duck_prod"
 
 # These should be filled with your local data for testing
-ddbb_server_test  = "localhost"
+ddbb_server_test  = "ceva-inventory.duckdns.org"
 ddbb_user_test = "VsCode"
-ddbb_password_test = "2458"
-ddbb_name_test = "inventary"
+ddbb_password_test = "Mpc8md8p78p175du890f!!"
+ddbb_name_test = "ceva_duck_prod"
 
 class DatabaseApp:
     DDBB_status = ""
@@ -106,8 +106,8 @@ class DatabaseApp:
         self.table_menu = Menu(self.menu_bar, bg='#003366', fg='white')  # Set table menu colors
         self.menu_bar.add_cascade(label='Tables', menu=self.table_menu)
         self.table_menu.add_command(label='Computers', command=lambda: self.change_table('computers'))
-        self.table_menu.add_command(label='StockComputers', command=lambda: self.change_table('stockComputers'))
-        self.table_menu.add_command(label='ObsoleteComputers', command=lambda: self.change_table('obsoleteComputers'))
+        self.table_menu.add_command(label='StockComputers', command=lambda: self.change_table('stockcomputers'))
+        self.table_menu.add_command(label='ObsoleteComputers', command=lambda: self.change_table('obsoletecomputers'))
         self.table_menu.add_command(label='Monitors', command=lambda: self.change_table('beta_inventory_barajas'))
         self.table_menu.add_command(label='ricoh', command=lambda: self.change_table('ricoh'))
         self.table_menu.add_command(label='zebra', command=lambda: self.change_table('zebraont'))
@@ -917,6 +917,8 @@ def get_ddbb_credentials(is_test_env):
         return ddbb_server_test, ddbb_user_test, ddbb_password_test, ddbb_name_test
     else:
         return ddbb_server_prod, ddbb_user_prod, ddbb_password_prod, ddbb_name_prod
+    
+    return ddbb_server_prod, ddbb_user_prod, ddbb_password_prod, ddbb_name_prod
 
 def check_version():
     try:
